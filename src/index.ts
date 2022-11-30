@@ -184,12 +184,31 @@ const command = new Map<string,CF>([
     ['비대면', 비대면],
 ])
 const client = new Client({
-    intents:[GatewayIntentBits.Guilds]
+    intents:[GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages]
 });
 
 client.on('ready', () => {
     console.log('테스트 시작!');
 });
+
+client.on('messageCreate', async msg => {
+    try{
+        if(msg.channelId !== process.env.CHANNEL) return;
+        if(msg.author.id !== process.env.CLIENT_ID) {
+            await msg.delete();
+            const embed = new EmbedBuilder()
+                .setColor('Red')
+                .setTitle('이 채널에서는 일반 메세지를 작성할 수 없습니다.');
+            const al = await msg.channel.send({
+                embeds:[embed]
+            });
+            setTimeout(async () => await al.delete(), 3000);
+        }
+    } catch(err){
+        await fs.writeFile(path.resolve(dirname, '../logs', new Date().toISOString()), String(err));
+    }
+})
+
 
 client.on('interactionCreate', async inter => {
     try{
