@@ -205,7 +205,7 @@ client.on('messageCreate', async msg => {
             setTimeout(async () => await al.delete(), 3000);
         }
     } catch(err){
-        await fs.writeFile(path.resolve(dirname, '../logs', new Date().toISOString()), String(err));
+        await fs.writeFile(path.resolve(dirname, '../logs', `${Date.now()}`), String(err), {encoding:'utf-8'});
     }
 });
 
@@ -220,6 +220,7 @@ client.on('interactionCreate', async inter => {
                 .setTitle('이 채널에서는 학생 알리미를 사용할 수 없습니다.');
             await inter.reply({embeds:[embed]});
             setTimeout(async () => await inter.deleteReply(), 3000);
+            return;
         }
         const result = command.get(inter.commandName)(inter.options.data);
         if(result.status){
@@ -227,14 +228,14 @@ client.on('interactionCreate', async inter => {
                 .setTitle(`[${result.title}]`)
                 .setFields(result.value.map((v, i) => ({name:`${i + 1}. ${v[0]}`, value:v[1]})))
             await inter.reply({embeds:[embed]});
-        } else {
-            embed.setColor('Red')
-                .setTitle(result.value as string)
-            await inter.reply({embeds:[embed]});
-            setTimeout(async () => await inter.deleteReply(), 3000);
+            return;
         }
+        embed.setColor('Red')
+            .setTitle(result.value as string)
+        await inter.reply({embeds:[embed]});
+        setTimeout(async () => await inter.deleteReply(), 3000);
     } catch(err){
-        await fs.writeFile(path.resolve(dirname, '../logs', new Date().toISOString()), String(err));
+        await fs.writeFile(path.resolve(dirname, '../logs', `${Date.now()}`), String(err), {encoding:'utf-8'});
     }
 });
 
