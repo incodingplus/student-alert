@@ -207,16 +207,21 @@ client.on('messageCreate', async msg => {
     } catch(err){
         await fs.writeFile(path.resolve(dirname, '../logs', new Date().toISOString()), String(err));
     }
-})
+});
 
 
 client.on('interactionCreate', async inter => {
     try{
         if(!inter.isChatInputCommand()) return;
         if(!command.has(inter.commandName)) return;
-        if(inter.channelId !== process.env.CHANNEL) return;
-        const result = command.get(inter.commandName)(inter.options.data);
         const embed = new EmbedBuilder();
+        if(inter.channelId !== process.env.CHANNEL) {
+            embed.setColor('Red')
+                .setTitle('이 채널에서는 학생 알리미를 사용할 수 없습니다.');
+            await inter.reply({embeds:[embed]});
+            setTimeout(async () => await inter.deleteReply(), 3000);
+        }
+        const result = command.get(inter.commandName)(inter.options.data);
         if(result.status){
             embed.setColor(result.color)
                 .setTitle(`[${result.title}]`)
@@ -231,6 +236,6 @@ client.on('interactionCreate', async inter => {
     } catch(err){
         await fs.writeFile(path.resolve(dirname, '../logs', new Date().toISOString()), String(err));
     }
-})
+});
 
 client.login(process.env.TOKEN);
