@@ -1,0 +1,25 @@
+{
+  "name": "student-alert",
+  "version": "1.0.0",
+  "description": "디스코드 학생 알리미 봇 입니다.",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node .",
+    "init": "node dist/init.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/incodingplus/student-alert.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/incodingplus/student-alert/issues"
+  },
+  "homepage": "https://github.com/incodingplus/student-alert#readme",
+  "dependencies": {
+    "discord.js": "^14.7.0",
+    "dotenv": "^16.0.3"
+  }
+}
