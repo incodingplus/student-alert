@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv';
 import fs from 'fs/promises';
 import { fileURLToPath } from 'url';
 import path from 'path';
-import { Client, GatewayIntentBits, CommandInteractionOption, CacheType, EmbedBuilder, ColorResolvable } from 'discord.js';
+import { Client, GatewayIntentBits, CommandInteractionOption, CacheType, EmbedBuilder, ColorResolvable, Partials } from 'discord.js';
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config();
 type CF = (obj:readonly CommandInteractionOption<CacheType>[])=>
@@ -25,7 +25,6 @@ const getDate = (date:string, flag = false) => {
     let d = Number(date.slice(3, 5));
     let h = Number(date.slice(6, 8));
     let m = Number(date.slice(9));
-    console.log(m);
     let realDate = new Date();
     let compare = new Date(realDate);
     compare.setFullYear(compare.getFullYear() + 1);
@@ -188,7 +187,8 @@ const command = new Map<string,CF>([
     ['비대면', 비대면],
 ])
 const client = new Client({
-    intents:[GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages]
+    intents:[GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions],
+    partials:[Partials.User, Partials.Reaction, Partials.Message]
 });
 
 client.on('ready', () => {
@@ -213,6 +213,15 @@ client.on('messageCreate', async msg => {
     }
 });
 
+client.on('messageReactionAdd', async inter => {
+    if(inter.emoji.name !== '😱') return;
+    if(inter.message.channelId !== process.env.CHANNEL) return;
+    const user = await inter.users.fetch();
+    const msg = await inter.message.fetch();
+    if(msg.interaction && user.has(msg.interaction.user.id)){
+        await msg.delete();
+    }
+})
 
 client.on('interactionCreate', async inter => {
     try{
