@@ -215,11 +215,13 @@ client.on('interactionCreate', async inter => {
         if(!inter.isChatInputCommand()) return;
         if(!command.has(inter.commandName)) return;
         const embed = new EmbedBuilder();
-        if(inter.channelId !== process.env.CHANNEL) {
+        if(inter.channel.parentId !== process.env.CATEGORY){
             embed.setColor('Red')
                 .setTitle('이 채널에서는 학생 알리미를 사용할 수 없습니다.');
             await inter.reply({embeds:[embed]});
             setTimeout(async () => await inter.deleteReply(), 3000);
+        }
+        if(inter.channelId !== process.env.CHANNEL) {
             return;
         }
         const result = command.get(inter.commandName)(inter.options.data);
