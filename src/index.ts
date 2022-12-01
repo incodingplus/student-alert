@@ -10,27 +10,31 @@ type CF = (obj:readonly CommandInteractionOption<CacheType>[])=>
 
 const getDate = (date:string, flag = false) => {
     const day = ['일', '월', '화', '수', '목', '금', '토'];
-    if(flag && !/\d{2}-\d{2}/.test(date)) {
+    if(flag && !/^\d{2}-\d{2}$/.test(date)) {
         return {
             status:false,
             value:"일시는 'MM-DD'의 형태로 작성해주세요.",
         }
-    } else if(!flag && !/\d{2}-\d{2}-\d{2}/.test(date)) {
+    } else if(!flag && !/^\d{2}-\d{2}-\d{2}(:\d{2})?$/.test(date)) {
         return {
             status:false,
-            value:"일시는 'MM-DD-HH'의 형태로 작성해주세요.",
+            value:"일시는 'MM-DD-HH' 또는 'MM-DD-HH:mm'의 형태로 작성해주세요.",
         }
     }
-    let m = Number(date.slice(0, 2));
+    let M = Number(date.slice(0, 2));
     let d = Number(date.slice(3, 5));
-    let h = Number(date.slice(6));
+    let h = Number(date.slice(6, 8));
+    let m = Number(date.slice(9));
+    console.log(m);
     let realDate = new Date();
-    if(realDate.getMonth() + 1 < m || (realDate.getMonth() + 1 === m && realDate.getDate() < d)){
+    let compare = new Date(realDate);
+    compare.setFullYear(compare.getFullYear() + 1);
+    if(Math.abs(Number(compare) - Date.now()) < Math.abs(Number(realDate) - Date.now())){
         realDate.setFullYear(realDate.getFullYear() + 1);
     }
-    realDate.setMonth(m - 1, d);
-    realDate.setHours(h);
-    if(!(realDate.getMonth() + 1 === m && realDate.getDate() === d && realDate.getHours() === h)) return {
+    realDate.setMonth(M - 1, d);
+    realDate.setHours(h, m);
+    if(!(realDate.getMonth() + 1 === M && realDate.getDate() === d && realDate.getHours() === h && realDate.getMinutes() === m)) return {
         status:false,
         value:'잘못된 일시를 작성했습니다.'
     };
@@ -48,7 +52,7 @@ const getDate = (date:string, flag = false) => {
     }
     return {
         status:true,
-        value:`${realDate.getMonth() + 1}/${realDate.getDate()}(${day[realDate.getDay()]}) ${oh}${h}시`
+        value:`${realDate.getMonth() + 1}/${realDate.getDate()}(${day[realDate.getDay()]}) ${oh}${h}시${m !== 0 ? ` ${m}분` : ''}`
     }
 }
 
