@@ -13,12 +13,12 @@ const getDate = (date:string, flag = false) => {
     if(flag && !/^\d{2}-\d{2}$/.test(date)) {
         return {
             status:false,
-            value:"일시는 'MM-DD'의 형태로 작성해주세요.",
+            value:"일시는 'MM-DD' 이런 형식으로 작성해주세요.",
         }
     } else if(!flag && !/^\d{2}-\d{2}-\d{2}(:\d{2})?$/.test(date)) {
         return {
             status:false,
-            value:"일시는 'MM-DD-HH' 또는 'MM-DD-HH:mm'의 형태로 작성해주세요.",
+            value:"일시는 'MM-DD-HH' 또는 'MM-DD-HH:mm' 이런 형식으로 작성해주세요.",
         }
     }
     let M = Number(date.slice(0, 2));

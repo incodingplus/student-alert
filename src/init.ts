@@ -13,7 +13,7 @@ const commands = [
             required: true,
         },{
             name:'일시',
-            description:"'MM-DD-HH' 이런 형식으로 날짜를 작성해주세요.",
+            description:"'MM-DD-HH' 또는 'MM-DD-HH:mm' 이런 형식으로 날짜를 작성해주세요.",
             type:3,
             required: true,
         },{
@@ -64,12 +64,12 @@ const commands = [
           required: true,
       },{
           name:'기존일시',
-          description:"'MM-DD-HH' 이런 형식으로 날짜를 작성해주세요.",
+          description:"'MM-DD-HH' 또는 'MM-DD-HH:mm' 이런 형식으로 날짜를 작성해주세요.",
           type:3,
           required: true,
       },{
         name:'변경일시',
-        description:"'MM-DD-HH' 이런 형식으로 날짜를 작성해주세요.",
+        description:"'MM-DD-HH' 또는 'MM-DD-HH:mm' 이런 형식으로 날짜를 작성해주세요.",
         type:3,
         required: true,
       },{
@@ -95,7 +95,7 @@ const commands = [
           required: true,
       },{
           name:'일시',
-          description:"'MM-DD-HH' 이런 형식으로 날짜를 작성해주세요.",
+          description:"'MM-DD-HH' 또는 'MM-DD-HH:mm' 이런 형식으로 날짜를 작성해주세요.",
           type:3,
           required: true,
       },{
@@ -120,7 +120,7 @@ const commands = [
           required: true,
       },{
           name:'일시',
-          description:"'MM-DD-HH' 이런 형식으로 날짜를 작성해주세요.",
+          description:"'MM-DD-HH' 또는 'MM-DD-HH:mm' 이런 형식으로 날짜를 작성해주세요.",
           type:3,
           required: true,
       },{
@@ -146,7 +146,7 @@ const commands = [
           required: true,
       },{
           name:'일시',
-          description:"'MM-DD-HH' 이런 형식으로 날짜를 작성해주세요.",
+          description:"'MM-DD-HH' 또는 'MM-DD-HH:mm' 이런 형식으로 날짜를 작성해주세요.",
           type:3,
           required: true,
       },{
