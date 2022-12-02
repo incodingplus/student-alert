@@ -241,7 +241,7 @@ client.on('interactionCreate', async inter => {
         if(result.status){
             embed.setColor(result.color)
                 .setTitle(`[${result.title}]`)
-                .setFields(result.value.map((v, i) => ({name:`${i + 1}. ${v[0]}`, value:v[1]})))
+                .setDescription(result.value.map((v, i) => `**${i + 1}. ${v[0]} : **${v[1]}`).join('\n\n'))
             await inter.reply({embeds:[embed]});
             return;
         }
