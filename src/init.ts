@@ -1,6 +1,5 @@
-import * as dotenv from 'dotenv';
+import './setting.js';
 import { REST, Routes } from 'discord.js';
-dotenv.config();
 const commands = [
   {
     name: '신규',

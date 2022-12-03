@@ -1,10 +1,9 @@
-import * as dotenv from 'dotenv';
+import './setting.js';
+import './google.js';
 import fs from 'fs/promises';
-import { fileURLToPath } from 'url';
 import path from 'path';
+import { dirname } from './setting.js';
 import { Client, GatewayIntentBits, CommandInteractionOption, CacheType, EmbedBuilder, ColorResolvable, Partials } from 'discord.js';
-const dirname = path.dirname(fileURLToPath(import.meta.url));
-dotenv.config();
 type CF = (obj:readonly CommandInteractionOption<CacheType>[])=>
     {status:true, title?:string, color?:ColorResolvable, value:[string, string][]} | {status:false, value:string};
 
