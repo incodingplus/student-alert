@@ -15,11 +15,8 @@ const googleSheet = sheets({
   version: "v4",
   auth: authorize,
 });
+const spreadsheetId = "1liovQ_eab5Q9cgxbwcN7gnDukOUIVCnCCmkd8raSf6o";
 const conNames = [""];
-const sheet = await googleSheet.spreadsheets.values.get({
-  spreadsheetId: "1liovQ_eab5Q9cgxbwcN7gnDukOUIVCnCCmkd8raSf6o",
-  range: "A1:B1",
-});
 
 const getToday = (): string => {
   let today = new Date();
@@ -31,8 +28,8 @@ const getToday = (): string => {
 };
 
 const addData = async (val: string[]) => {
-  const sheet = await googleSheet.spreadsheets.values.append({
-    spreadsheetId: "1liovQ_eab5Q9cgxbwcN7gnDukOUIVCnCCmkd8raSf6o",
+  await googleSheet.spreadsheets.values.append({
+    spreadsheetId: spreadsheetId,
     range: "시트1",
     valueInputOption: "RAW",
     insertDataOption: "INSERT_ROWS",
@@ -41,19 +38,44 @@ const addData = async (val: string[]) => {
     },
   });
 };
+
+const deleteDataByrow = async (rowNum: number) => {
+  await googleSheet.spreadsheets.values.clear({
+    spreadsheetId: spreadsheetId,
+    range: `시트1!${rowNum}:${rowNum}`,
+  });
+};
 export const addToSpreadsheet = async (
   chatId: string,
   type: string,
   inputValue: [string, string][]
 ) => {
-  const requestBody: string[] = [chatId, type, getToday()];
+  const requestBody: string[] = [chatId, type];
   inputValue.forEach((data) => {
     if (data[0] == "일시") {
       const dates = data[1].split(" → ");
-      requestBody.push(...dates);
+      dates.length - 1
+        ? requestBody.push(...dates)
+        : requestBody.push(...dates, "");
     } else requestBody.push(data[1]);
   });
+  requestBody.push(getToday());
   await addData(requestBody);
 };
 
-console.log(sheet.data.values);
+export const deleteSpreadsheet = async (id: string) => {
+  const sheet = await googleSheet.spreadsheets.values.get({
+    spreadsheetId: spreadsheetId,
+    range: "시트1",
+  });
+  const sheetData = sheet.data.values;
+
+  //몇번째 row에 있는지 rowNum을 받아옴
+  let rowNum: number;
+  sheetData.forEach((v, i) => {
+    rowNum = i + 1;
+    if (v[0] == id) return;
+  });
+  deleteDataByrow(rowNum);
+};
+//A(index+1)번째 있는 값을 삭제해야함

@@ -1,5 +1,5 @@
 import "./setting.js";
-import { addToSpreadsheet } from "./google.js";
+import { addToSpreadsheet, deleteSpreadsheet } from "./google.js";
 import fs from "fs/promises";
 import path from "path";
 import { dirname } from "./setting.js";
@@ -285,6 +285,7 @@ client.on("messageReactionAdd", async (inter) => {
   const msg = await inter.message.fetch();
   if (msg.interaction && user.has(msg.interaction.user.id)) {
     // 메세지 삭제
+    deleteSpreadsheet(msg.id);
     await msg.delete();
   }
 });
