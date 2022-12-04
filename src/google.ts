@@ -39,12 +39,6 @@ const addData = async (val: string[]) => {
   });
 };
 
-const deleteDataByrow = async (rowNum: number) => {
-  await googleSheet.spreadsheets.values.clear({
-    spreadsheetId: spreadsheetId,
-    range: `시트1!${rowNum}:${rowNum}`,
-  });
-};
 export const addToSpreadsheet = async (
   chatId: string,
   type: string,
@@ -63,6 +57,12 @@ export const addToSpreadsheet = async (
   await addData(requestBody);
 };
 
+const deleteDataByrow = async (rowNum: number) => {
+  await googleSheet.spreadsheets.values.clear({
+    spreadsheetId: spreadsheetId,
+    range: `시트1!${rowNum}:${rowNum}`,
+  });
+};
 export const deleteSpreadsheet = async (id: string) => {
   const sheet = await googleSheet.spreadsheets.values.get({
     spreadsheetId: spreadsheetId,
@@ -72,10 +72,10 @@ export const deleteSpreadsheet = async (id: string) => {
 
   //몇번째 row에 있는지 rowNum을 받아옴
   let rowNum: number;
-  sheetData.forEach((v, i) => {
+  for (let i = 0; i < sheetData.length; i++) {
     rowNum = i + 1;
-    if (v[0] == id) return;
-  });
+    if (sheetData[i][0] == id) break;
+  }
   deleteDataByrow(rowNum);
 };
 //A(index+1)번째 있는 값을 삭제해야함

@@ -285,7 +285,8 @@ client.on("messageReactionAdd", async (inter) => {
   const msg = await inter.message.fetch();
   if (msg.interaction && user.has(msg.interaction.user.id)) {
     // 메세지 삭제
-    deleteSpreadsheet(msg.id);
+    // msg.id는 해당 메시지의 id 값이 아님. 해당 메시지의 id 값은 msg.interaction.id에 있음.
+    deleteSpreadsheet(msg.interaction.id);
     await msg.delete();
   }
 });
