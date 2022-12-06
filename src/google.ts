@@ -27,12 +27,49 @@ const getToday = (): string => {
   return year + "-" + month + "-" + day;
 };
 
-const addData = async (val: string[]) => {
-  await googleSheet.spreadsheets.values.append({
+/**
+ * 값을 입력받아 스프레드시트에서 A열의 몇번째 행에 해당 값이 있는지를 반환해주는 함수
+ * 값을 입력하지 않으면 스프레드시트에서 비어있는 부분의 행 번호를 알려준다.
+ * @param {string} value
+ * @returns 열 번호를 반환
+ */
+const getRownumByValue = async (value: string) => {
+  const sheet = await googleSheet.spreadsheets.values.get({
     spreadsheetId: spreadsheetId,
     range: "시트1",
+  });
+  const sheetData = sheet.data.values;
+
+  let rowNum: number;
+  for (let i = 0; i < sheetData.length; i++) {
+    rowNum = i + 1;
+    if (sheetData[i][0] == value) break;
+  }
+  return rowNum;
+};
+
+const getLastRownum = async () => {
+  const sheet = await googleSheet.spreadsheets.values.get({
+    spreadsheetId: spreadsheetId,
+    range: "시트1",
+  });
+  const sheetData = sheet.data.values;
+
+  let rowNum: number;
+  for (let i = 0; i < sheetData.length; i++) {
+    rowNum = i + 1;
+    console.log(sheetData[i][0]);
+    if (!sheetData[i][0]) break;
+  }
+  if (sheetData.length == rowNum) rowNum++;
+  return rowNum;
+};
+const addData = async (val: string[]) => {
+  let rowNum = await getLastRownum();
+  await googleSheet.spreadsheets.values.update({
+    spreadsheetId: spreadsheetId,
+    range: `시트1!${rowNum}:${rowNum}`,
     valueInputOption: "RAW",
-    insertDataOption: "INSERT_ROWS",
     requestBody: {
       values: [val],
     },
@@ -64,18 +101,7 @@ const deleteDataByrow = async (rowNum: number) => {
   });
 };
 export const deleteSpreadsheet = async (id: string) => {
-  const sheet = await googleSheet.spreadsheets.values.get({
-    spreadsheetId: spreadsheetId,
-    range: "시트1",
-  });
-  const sheetData = sheet.data.values;
-
-  //몇번째 row에 있는지 rowNum을 받아옴
-  let rowNum: number;
-  for (let i = 0; i < sheetData.length; i++) {
-    rowNum = i + 1;
-    if (sheetData[i][0] == id) break;
-  }
+  let rowNum = await getRownumByValue(id);
   deleteDataByrow(rowNum);
 };
 //A(index+1)번째 있는 값을 삭제해야함
