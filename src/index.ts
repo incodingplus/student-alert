@@ -57,6 +57,10 @@ client.on("messageCreate", async (msg) => {
   }
 });
 
+client.on('messageDelete', async inter => {
+  await addQueueSpread('del', {id:inter.id});
+})
+
 client.on("messageReactionAdd", async (inter) => {
   if (inter.emoji.name !== "😱") return;
   if (inter.message.channelId !== process.env.CHANNEL) return;
@@ -66,7 +70,7 @@ client.on("messageReactionAdd", async (inter) => {
     // 메세지 삭제
     // msg.id는 해당 메시지의 id 값이 아님. 해당 메시지의 id 값은 msg.interaction.id에 있음.
     await msg.delete();
-    await addQueueSpread('del', {id:msg.interaction.id});
+    await addQueueSpread('del', {id:msg.id});
   }
 });
 
@@ -87,7 +91,6 @@ client.on("interactionCreate", async (inter) => {
     }
     const result = command.get(inter.commandName)(inter.options.data);
     if (result.status) {
-      const chatId = inter.id;
       const type = result.title;
       const inputValue = result.value;
 
@@ -101,8 +104,9 @@ client.on("interactionCreate", async (inter) => {
             .join("\n\n")
         );
       await inter.reply({ embeds: [embed] });
+      const message = await inter.fetchReply();
       await addQueueSpread('add', {
-        id:chatId, type, inputValue
+        id:message.id, type, inputValue
       });
       return;
     }
