@@ -1,6 +1,18 @@
 import './setting.js';
 import { REST, Routes } from 'discord.js';
 const commands = [
+    {
+        name:'지시',
+        description:'지시 사항을 내릴 학생을 적어주세요.',
+        options:[
+            {
+                name:'이름',
+                description:'학생 이름을 선택해주세요.',
+                type:6,
+                required: true,
+            }
+        ]
+    },
   {
     name: '신규',
     description: '신규 학생 등록 공지',

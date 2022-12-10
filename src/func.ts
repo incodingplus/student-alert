@@ -231,3 +231,10 @@ export const 테스트: CF = (obj) => {
         value: '테스트입니다.',
     }
 }
+
+export const 지시:CF = (obj) => {
+    const name = obj.find((v) => v.name === "이름").value as string;
+    const date = obj.find((v) => v.name === "일시").value as string;
+    const sub = obj.find((v) => v.name === "과목").value as string;
+    const other = obj.find((v) => v.name === "사유").value as string;
+}
