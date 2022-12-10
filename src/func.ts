@@ -13,6 +13,13 @@ export type CF = (obj: readonly CommandInteractionOption<CacheType>[]) =>
   }
 | { status: false; value: string };
 
+export type SF = () =>
+{
+    title?: string;
+    color?: ColorResolvable;
+    value: [string, string][];
+}
+
 const getDate = (date: string, flag = false) => {
     const day = ["일", "월", "화", "수", "목", "금", "토"];
     if (flag && !/^\d{2}-\d{2}$/.test(date)) {
@@ -232,9 +239,19 @@ export const 테스트: CF = (obj) => {
     }
 }
 
-export const 지시:CF = (obj) => {
-    const name = obj.find((v) => v.name === "이름").value as string;
-    const date = obj.find((v) => v.name === "일시").value as string;
-    const sub = obj.find((v) => v.name === "과목").value as string;
-    const other = obj.find((v) => v.name === "사유").value as string;
+export const 지시:SF = () => {
+    return {
+        title:'지시사항',
+        color:'Aqua',
+        value:[
+            ['jisi', '지시']
+        ]
+    }
+}
+
+export const 삭제:CF = (obj) => {
+    return {
+        status:false,
+        value:'테스트',
+    }
 }

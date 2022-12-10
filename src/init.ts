@@ -1,5 +1,10 @@
 import './setting.js';
-import { REST, Routes } from 'discord.js';
+import { 
+    ApplicationCommandType,
+    ContextMenuCommandBuilder,
+    REST,
+    Routes
+} from 'discord.js';
 const commands = [
     {
         name:'지시',
@@ -172,6 +177,9 @@ const commands = [
           required: true,
       }
     ]
+  }, {
+    name:'메세지 삭제',
+    type:3,
   }
 ];
 
