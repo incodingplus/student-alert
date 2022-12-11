@@ -30,14 +30,17 @@ export const studentJisi = async (inter:Interaction<CacheType>) => {
 
     const embed = new EmbedBuilder();
     embed
-        .setColor('Aqua')
+        .setColor(data.color)
         .setTitle(`[${data.title}]`);
     const arr:ActionRowBuilder<TextInputBuilder>[] = [];
     for(let i of data.value){
         const input = new TextInputBuilder()
-            .setCustomId(i[0])
-            .setLabel(i[1])
+            .setCustomId(i.id)
+            .setLabel(i.label)
             .setStyle(TextInputStyle.Paragraph);
+        if(i.value){
+            input.setValue(i.value());
+        }
         const act = new ActionRowBuilder<TextInputBuilder>().addComponents(input);
         arr.push(act);
     }
@@ -46,14 +49,25 @@ export const studentJisi = async (inter:Interaction<CacheType>) => {
     await inter.showModal(modal);
     const modalInter = await inter.awaitModalSubmit({
         filter(e){
-            console.log('모달 기다리는 중');
+            for(let i of data.value){
+                if(!i.check) continue;
+                const value = e.fields.getTextInputValue(i.id);
+                const ch = i.check(value);
+                if(!ch.status) return false;
+            }
             return true
         },
-        time:60000
+        time:60000,
     });
     const result:[string, string][] = [
         ['이름', member.nickname],
-        ...data.value.map(v => [v[1], modalInter.fields.getTextInputValue(v[0])] as [string, string])
+        ...data.value.map(v => {
+            let val = modalInter.fields.getTextInputValue(v.id);
+            if(v.check){
+                val = v.check(val).value;
+            }
+            return [v.view, val] as [string, string]
+        })
     ]
     embed.setDescription(
         result.map((v, i)=> `**${i + 1}. ${v[0]}** : ${v[1]}`).join('\n\n')

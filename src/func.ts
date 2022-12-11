@@ -17,7 +17,13 @@ export type SF = () =>
 {
     title?: string;
     color?: ColorResolvable;
-    value: [string, string][];
+    value: {
+        id:string;
+        label:string;
+        view:string;
+        value?:()=>string;
+        check?:(str:string)=>({status:boolean;value:string})
+    }[];
 }
 
 const getDate = (date: string, flag = false) => {
@@ -244,7 +250,25 @@ export const 지시:SF = () => {
         title:'지시사항',
         color:'Aqua',
         value:[
-            ['jisi', '지시']
+            {
+                id:'date',
+                label:'수업 날짜를 작성해주세요. (MM-DD 형식)',
+                view:'일시',
+                value(){
+                    const date = new Date();
+                    const str = `${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+                    return str;
+                },
+                check(str) {
+                    const data = getDate(str, true);
+                    return data;
+                }
+            },
+            {
+                id:'jisi',
+                label:'지시사항을 작성해주세요.',
+                view:'지시'
+            }
         ]
     }
 }
