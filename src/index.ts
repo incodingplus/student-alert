@@ -75,7 +75,7 @@ client.on('messageDelete', async inter => {
 
 client.on("interactionCreate", async (inter) => {
     try {
-        if (!inter.isChatInputCommand() && !inter.isModalSubmit() && !inter.isMessageContextMenuCommand()) return;
+        if (!inter.isChatInputCommand() && !inter.isMessageContextMenuCommand()) return;
         if (inter.channel.parentId !== process.env.CATEGORY) {
             const embed = new EmbedBuilder();
             embed
