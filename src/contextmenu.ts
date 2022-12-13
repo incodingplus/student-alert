@@ -27,7 +27,6 @@ export const studentContext = async (inter:Interaction<CacheType>) => {
             .setColor("Red")
             .setTitle("이 메세지를 만든 유저가 아니라서 삭제할 수 없습니다.");
     }
-    await inter.reply({ embeds: [embed] });
-    setTimeout(async () => await inter.deleteReply(), 3000);
+    await inter.reply({ embeds: [embed], ephemeral:true });
     return;
 }

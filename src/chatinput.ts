@@ -9,7 +9,7 @@ import {
 } from 'discord.js';
 import { addQueueSpread } from "./google.js";
 
-const command = new Map<string, CF>([
+export const command = new Map<string, CF>([
     ["신규", 신규],
     ["퇴원", 퇴원],
     ["변경", 변경],
@@ -42,12 +42,12 @@ export const studentAlert = async (inter: Interaction<CacheType>) => {
         await inter.reply({ embeds: [embed] });
         const message = await inter.fetchReply();
         await addQueueSpread('add', {
-            id: message.id, type, inputValue
+            id: message.id, type, inputValue, spreadName:process.env.SPREAD_NAME
         });
         return true;
     }
     embed.setColor("Red").setTitle(result.value as string);
-    await inter.reply({ embeds: [embed] });
+    await inter.reply({ embeds: [embed], ephemeral:true });
     setTimeout(async () => await inter.deleteReply(), 3000);
     return true;
 }

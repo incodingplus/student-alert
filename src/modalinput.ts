@@ -12,7 +12,9 @@ import {
     ActionRowBuilder,
     EmbedBuilder,
 } from 'discord.js';
-const command = new Map<string, SF>([
+import { addQueueSpread } from './google.js';
+
+export const command = new Map<string, SF>([
     ['지시', 지시]
 ]);
 
@@ -20,7 +22,8 @@ const command = new Map<string, SF>([
 export const studentJisi = async (inter:Interaction<CacheType>) => {
     if (!inter.isChatInputCommand()) return false;
     if (!command.has(inter.commandName)) return false;
-    if (inter.channelId !== process.env.CHANNEL2) return false;
+    if (inter.channelId !== process.env.CHANNEL_JISI) return false;
+    const reg = /^([가-힣]+)\d{5}$/;
     const data = command.get(inter.commandName)();
     const modal = new ModalBuilder()
         .setCustomId(inter.commandName)
@@ -29,6 +32,14 @@ export const studentJisi = async (inter:Interaction<CacheType>) => {
     let member = inter.options.data[0].member as GuildMember;
 
     const embed = new EmbedBuilder();
+    let user = reg.test(member.nickname) ? member.nickname : member.user.username;
+    if(!user){
+        embed
+            .setColor("Red")
+            .setTitle("이 유저는 적절한 학생이 아닙니다.");
+        await inter.reply({ embeds: [embed], ephemeral:true });
+        return;
+    }
     embed
         .setColor(data.color)
         .setTitle(`[${data.title}]`);
@@ -46,7 +57,7 @@ export const studentJisi = async (inter:Interaction<CacheType>) => {
     }
 
     modal.addComponents(...arr);
-    await inter.showModal(modal);
+    inter.showModal(modal);
     const modalInter = await inter.awaitModalSubmit({
         filter(e){
             for(let i of data.value){
@@ -60,7 +71,7 @@ export const studentJisi = async (inter:Interaction<CacheType>) => {
         time:60000,
     });
     const result:[string, string][] = [
-        ['이름', member.nickname],
+        ['이름', user.match(reg)[1]],
         ...data.value.map(v => {
             let val = modalInter.fields.getTextInputValue(v.id);
             if(v.check){
@@ -74,6 +85,10 @@ export const studentJisi = async (inter:Interaction<CacheType>) => {
     );
     await modalInter.reply({
         embeds:[embed]
-    })
+    });
+    const message = await modalInter.fetchReply();
+    await addQueueSpread('add', {
+        id: message.id, type:inter.commandName, inputValue:[['아이디', user],...result], spreadName:process.env.SPREAD_NAME_JISI
+    });
     return true;
 }

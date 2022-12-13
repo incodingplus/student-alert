@@ -17,15 +17,15 @@ const googleSheet = sheets({
 });
 const spreadsheetId = process.env.SPREAD_ID;
 const spreadsheetName = process.env.SPREAD_NAME;
+const spreadsheetNameJisi = process.env.SPREAD_NAME_JISI
 const spreadsheetInfo = await googleSheet.spreadsheets.get({
   spreadsheetId,
 })
-const spreadsheetSheetId = spreadsheetInfo.data.sheets?.find?.(v => v.properties.title === spreadsheetName).properties.sheetId;
-const conNames = [""];
 interface QueueType{
   id:string;
   type?:string;
   inputValue?:[string,string][]
+  spreadName:string;
 };
 
 let working = false;
@@ -48,49 +48,33 @@ const getToday = (): string => {
  * @param {string} value
  * @returns 열 번호를 반환
  */
-const getRownumByValue = async (value: string) => {
+const getRownumByValue = async (obj:QueueType) => {
   const sheet = await googleSheet.spreadsheets.values.get({
     spreadsheetId,
-    range: spreadsheetName,
+    range: obj.spreadName,
   });
   const sheetData = sheet.data.values;
-
   for (let rowNum = 0; rowNum < sheetData.length; rowNum++) {
-    if (sheetData[rowNum][0] === value) return rowNum;
+    if (sheetData[rowNum][0] === obj.id) return rowNum;
   }
   return 0;
 };
 
-const getLastRownum = async () => {
-  const sheet = await googleSheet.spreadsheets.values.get({
+const addData = async (val: string[], spreadsheetName:string) => {
+  await googleSheet.spreadsheets.values.append({
     spreadsheetId,
-    range: spreadsheetName,
-  });
-  const sheetData = sheet.data.values;
-
-  let rowNum: number;
-  for (let i = 0; i < sheetData.length; i++) {
-    rowNum = i + 1;
-    if (!sheetData[i][0]) break;
-  }
-  if (sheetData.length == rowNum) rowNum++;
-  return rowNum;
-};
-const addData = async (val: string[]) => {
-  let rowNum = await getLastRownum();
-  await googleSheet.spreadsheets.values.update({
-    spreadsheetId,
-    range: `${spreadsheetName}!${rowNum}:${rowNum}`,
-    valueInputOption: "RAW",
-    requestBody: {
-      values: [val],
-    },
+    range:spreadsheetName,
+    valueInputOption:'RAW',
+    requestBody:{
+      values:[val]
+    }
   });
 };
 
 const addToSpreadsheet = async (obj:QueueType) => {
   const { id, type, inputValue } = obj;
-  const requestBody: string[] = [id, type];
+  const requestBody: string[] = [id];
+  if(type) requestBody.push(type);
   inputValue.forEach((data) => {
     if (data[0] == "일시") {
       const dates = data[1].split(" → ");
@@ -100,11 +84,12 @@ const addToSpreadsheet = async (obj:QueueType) => {
     } else requestBody.push(data[1]);
   });
   requestBody.push(getToday());
-  await addData(requestBody);
+  await addData(requestBody, obj.spreadName);
 };
 
-const deleteDataByrow = async (rowNum: number) => {
-  const info = await googleSheet.spreadsheets.batchUpdate({
+const deleteDataByrow = async (rowNum: number, spreadsheetName:string) => {
+  const spreadsheetSheetId = spreadsheetInfo.data.sheets?.find?.(v => v.properties.title === spreadsheetName).properties.sheetId;
+  await googleSheet.spreadsheets.batchUpdate({
     spreadsheetId,
     requestBody:{
       requests:[
@@ -125,10 +110,9 @@ const deleteDataByrow = async (rowNum: number) => {
 
 
 const deleteSpreadsheet = async (obj:QueueType) => {
-  let rowNum = await getRownumByValue(obj.id);
-  if(rowNum !== 0) await deleteDataByrow(rowNum);
+  let rowNum = await getRownumByValue(obj);
+  if(rowNum !== 0) await deleteDataByrow(rowNum, obj.spreadName);
 };
-//A(index+1)번째 있는 값을 삭제해야함
 
 const workSpreadsheet = async (type:string, obj:QueueType) => {
   switch(type){

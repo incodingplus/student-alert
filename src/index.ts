@@ -8,12 +8,15 @@ import {
     GatewayIntentBits,
     EmbedBuilder,
     Partials,
+    TextChannel
 } from "discord.js";
 import {
     studentAlert,
+    command as commandC
 } from "./chatinput.js";
 import {
     studentJisi,
+    command as commandM
 } from './modalinput.js';
 import {
     studentContext
@@ -29,19 +32,19 @@ const client = new Client({
     partials: [Partials.User, Partials.Reaction, Partials.Message],
 });
 
-client.on("ready", () => {
-    console.log("테스트 시작!");
+client.on("ready", async () => {
+    console.log('준비 완료');
 });
 
 client.on("messageCreate", async (msg) => {
     try {
-        if (msg.channelId !== process.env.CHANNEL && msg.channelId !== process.env.CHANNEL2) return;
+        if (msg.channelId !== process.env.CHANNEL && msg.channelId !== process.env.CHANNEL_JISI) return;
         if (msg.author.id !== process.env.CLIENT_ID) {
             await msg.delete();
             const embed = new EmbedBuilder()
                 .setColor("Red")
                 .setTitle("이 채널에서는 일반 메세지를 작성할 수 없습니다.");
-            const al = await msg.channel.send({
+            const al = await msg.author.send({
                 embeds: [embed],
             });
             setTimeout(async () => await al.delete(), 3000);
@@ -56,7 +59,18 @@ client.on("messageCreate", async (msg) => {
 });
 
 client.on('messageDelete', async inter => {
-    await addQueueSpread('del', { id: inter.id });
+    let spreadName = '';
+    if(!inter?.interaction?.commandName) return;
+    if(!commandC.has(inter.interaction.commandName) && !commandM.has(inter.interaction.commandName)) return;
+    let command = inter.interaction.commandName;
+    if(commandC.has(command)){
+        spreadName = process.env.SPREAD_NAME;
+    } else if(commandM.has(command)){
+        spreadName = process.env.SPREAD_NAME_JISI;
+    } else {
+        return;
+    }
+    await addQueueSpread('del', { id: inter.id, spreadName});
 });
 
 client.on("interactionCreate", async (inter) => {
@@ -67,17 +81,17 @@ client.on("interactionCreate", async (inter) => {
             embed
                 .setColor("Red")
                 .setTitle("이 채널에서는 학생 알리미를 사용할 수 없습니다.");
-            await inter.reply({ embeds: [embed] });
-            setTimeout(async () => await inter.deleteReply(), 3000);
+            await inter.reply({ embeds: [embed], ephemeral:true });
             return;
         }
         let bool = await studentAlert(inter);
         if (!bool) bool = await studentJisi(inter);
         if (!bool) bool = await studentContext(inter);
     } catch (err) {
+        console.error(err);
         await fs.writeFile(
             path.resolve(dirname, "../logs", `${Date.now()}`),
-            String(err),
+            typeof err === 'object' ? JSON.stringify(err) : String(err),
             { encoding: "utf-8" }
         );
     }
