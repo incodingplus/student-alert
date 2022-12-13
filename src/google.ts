@@ -16,8 +16,6 @@ const googleSheet = sheets({
   auth: authorize,
 });
 const spreadsheetId = process.env.SPREAD_ID;
-const spreadsheetName = process.env.SPREAD_NAME;
-const spreadsheetNameJisi = process.env.SPREAD_NAME_JISI
 const spreadsheetInfo = await googleSheet.spreadsheets.get({
   spreadsheetId,
 })
@@ -50,7 +48,6 @@ const getRownumByValue = async (obj:QueueType) => {
 };
 
 const addData = async (val: string[], spreadsheetName:string) => {
-  console.log(val);
   await googleSheet.spreadsheets.values.append({
     spreadsheetId,
     range:spreadsheetName,
@@ -106,7 +103,6 @@ export const addQueueSpread = async (_type:string, _obj:QueueType) => {
   if(working) return;
   working = true;
   const [ type, obj ] = queue.shift();
-  console.log(obj);
   await workSpreadsheet(type, obj);
   working = false;
 }

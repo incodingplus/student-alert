@@ -2,7 +2,7 @@ import "./setting.js";
 import { addQueueSpread } from "./google.js";
 import fs from "fs/promises";
 import path from "path";
-import { dirname } from "./setting.js";
+import { channelsArr, dirname, spreadsArr } from "./setting.js";
 import {
     Client,
     GatewayIntentBits,
@@ -38,7 +38,7 @@ client.on("ready", async () => {
 
 client.on("messageCreate", async (msg) => {
     try {
-        if (msg.channelId !== process.env.CHANNEL && msg.channelId !== process.env.CHANNEL_JISI) return;
+        if (!channelsArr.includes(msg.channelId)) return;
         if (msg.author.id !== process.env.CLIENT_ID) {
             await msg.delete();
             const embed = new EmbedBuilder()
@@ -64,9 +64,9 @@ client.on('messageDelete', async inter => {
     if(!commandC.has(inter.interaction.commandName) && !commandM.has(inter.interaction.commandName)) return;
     let command = inter.interaction.commandName;
     if(commandC.has(command)){
-        spreadName = process.env.SPREAD_NAME;
+        spreadName = spreadsArr[0];
     } else if(commandM.has(command)){
-        spreadName = process.env.SPREAD_NAME_JISI;
+        spreadName = spreadsArr[1];
     } else {
         return;
     }
@@ -84,8 +84,8 @@ client.on("interactionCreate", async (inter) => {
             await inter.reply({ embeds: [embed], ephemeral:true });
             return;
         }
-        let bool = await studentAlert(inter);
-        if (!bool) bool = await studentJisi(inter);
+        let bool = await studentAlert(inter, channelsArr[0], spreadsArr[0]);
+        if (!bool) bool = await studentJisi(inter, channelsArr[1], spreadsArr[1]);
         if (!bool) bool = await studentContext(inter);
     } catch (err) {
         console.error(err);

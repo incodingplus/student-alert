@@ -20,10 +20,10 @@ export const command = new Map<string, CF>([
 
 
 
-export const studentAlert = async (inter: Interaction<CacheType>) => {
+export const studentAlert = async (inter: Interaction<CacheType>, channel:string, spreadName:string) => {
     if (!inter.isChatInputCommand()) return false;
     if (!command.has(inter.commandName)) return false; //inter의 commandName이 command에서 정의한 타입에 포함되지 않으면 종료
-    if (inter.channelId !== process.env.CHANNEL) return false;
+    if (inter.channelId !== channel) return false;
     const embed = new EmbedBuilder();
     const result = command.get(inter.commandName)(inter.options.data);
     if (result.status) {
@@ -42,7 +42,7 @@ export const studentAlert = async (inter: Interaction<CacheType>) => {
         await inter.reply({ embeds: [embed] });
         const message = await inter.fetchReply();
         await addQueueSpread('add', {
-            id: message.id, type, inputValue, spreadName:process.env.SPREAD_NAME
+            id: message.id, type, inputValue, spreadName
         });
         return true;
     }

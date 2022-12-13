@@ -4,6 +4,9 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import type { QueueType } from './google.js';
 
+export const channelsArr = process.env.CHANNEL.split(',');
+export const spreadsArr = process.env.SPREAD_NAME.split(',');
+
 const getToday = (): string => {
     let today = new Date();
     let year = today.getFullYear();
@@ -16,9 +19,8 @@ const getToday = (): string => {
 };
 
 export const dirname = path.dirname(fileURLToPath(import.meta.url));
-export const channels = new Set<string>();
 export const spreadMap = new Map<string, (obj:QueueType)=>string[]>([
-    [process.env.SPREAD_NAME, obj => {
+    [spreadsArr[0], obj => {
         const { id, type, inputValue } = obj;
         const requestBody: string[] = [id];
         if(type) requestBody.push(type);
@@ -33,13 +35,11 @@ export const spreadMap = new Map<string, (obj:QueueType)=>string[]>([
         requestBody.push(getToday());
         return requestBody;
     }],
-    [process.env.SPREAD_NAME_JISI, obj => {
+    [spreadsArr[1], obj => {
         const { id, type, inputValue } = obj;
         const requestBody: string[] = [id];
         if(type) requestBody.push(type);
         requestBody.push(...inputValue.map(v => v[1]), getToday());
         return requestBody;
     }]
-])
-channels.add(process.env.CHANNEL);
-channels.add(process.env.CHANNEL_JISI);
+]);

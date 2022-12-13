@@ -19,10 +19,10 @@ export const command = new Map<string, SF>([
 ]);
 
 
-export const studentJisi = async (inter:Interaction<CacheType>) => {
+export const studentJisi = async (inter:Interaction<CacheType>, channel:string, spreadName:string) => {
     if (!inter.isChatInputCommand()) return false;
     if (!command.has(inter.commandName)) return false;
-    if (inter.channelId !== process.env.CHANNEL_JISI) return false;
+    if (inter.channelId !== channel) return false;
     const reg = /^([가-힣]+)\d{5}$/;
     const data = command.get(inter.commandName)();
     const modal = new ModalBuilder()
@@ -88,7 +88,7 @@ export const studentJisi = async (inter:Interaction<CacheType>) => {
     });
     const message = await modalInter.fetchReply();
     await addQueueSpread('add', {
-        id: message.id, type:inter.commandName, inputValue:[['아이디', user],...result], spreadName:process.env.SPREAD_NAME_JISI
+        id: message.id, type:inter.commandName, inputValue:[['아이디', user],...result], spreadName
     });
     return true;
 }

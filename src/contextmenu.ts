@@ -1,6 +1,6 @@
 import type { CF } from './func.js';
 import { 삭제 } from './func.js';
-import { channels } from './setting.js';
+import { channelsArr } from './setting.js';
 import type {
     Interaction,
     CacheType,
@@ -15,7 +15,7 @@ const command = new Map<string, CF>([
 export const studentContext = async (inter:Interaction<CacheType>) => {
     if(!inter.isMessageContextMenuCommand()) return;
     if (!command.has(inter.commandName)) return false;
-    if (!channels.has(inter.channelId)) return false;
+    if (!channelsArr.includes(inter.channelId)) return false;
     const embed = new EmbedBuilder();
     if(inter.user.id === inter.targetMessage.interaction.user.id){
         await inter.targetMessage.delete();
