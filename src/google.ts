@@ -1,7 +1,7 @@
 import { sheets, auth } from "@googleapis/sheets";
 import fs from "fs/promises";
 import path from "path";
-import { dirname } from "./setting.js";
+import { dirname, spreadMap } from "./setting.js";
 
 const raw = await fs.readFile(
   path.resolve(dirname, "../credential", process.env.SPREAD_PATH),
@@ -21,7 +21,7 @@ const spreadsheetNameJisi = process.env.SPREAD_NAME_JISI
 const spreadsheetInfo = await googleSheet.spreadsheets.get({
   spreadsheetId,
 })
-interface QueueType{
+export interface QueueType{
   id:string;
   type?:string;
   inputValue?:[string,string][]
@@ -30,17 +30,6 @@ interface QueueType{
 
 let working = false;
 const queue:[string, QueueType][] = [];
-
-const getToday = (): string => {
-  let today = new Date();
-  let year = today.getFullYear();
-  let month = (today.getMonth() + 1).toString().padStart(2, '0');
-  let day = today.getDate().toString().padStart(2, '0');
-  let hours = today.getHours().toString().padStart(2, '0');
-  let mins = today.getMinutes().toString().padStart(2, '0');
-  let secs = today.getSeconds().toString().padStart(2, '0');
-  return `${year}-${month}-${day}T${hours}:${mins}:${secs}`;
-};
 
 /**
  * 값을 입력받아 스프레드시트에서 A열의 몇번째 행에 해당 값이 있는지를 반환해주는 함수
@@ -61,6 +50,7 @@ const getRownumByValue = async (obj:QueueType) => {
 };
 
 const addData = async (val: string[], spreadsheetName:string) => {
+  console.log(val);
   await googleSheet.spreadsheets.values.append({
     spreadsheetId,
     range:spreadsheetName,
@@ -72,18 +62,7 @@ const addData = async (val: string[], spreadsheetName:string) => {
 };
 
 const addToSpreadsheet = async (obj:QueueType) => {
-  const { id, type, inputValue } = obj;
-  const requestBody: string[] = [id];
-  if(type) requestBody.push(type);
-  inputValue.forEach((data) => {
-    if (data[0] == "일시") {
-      const dates = data[1].split(" → ");
-      dates.length - 1
-        ? requestBody.push(...dates)
-        : requestBody.push(...dates, "");
-    } else requestBody.push(data[1]);
-  });
-  requestBody.push(getToday());
+  const requestBody = spreadMap.get(obj.spreadName)(obj);
   await addData(requestBody, obj.spreadName);
 };
 
@@ -126,8 +105,8 @@ export const addQueueSpread = async (_type:string, _obj:QueueType) => {
   queue.push([_type, _obj]);
   if(working) return;
   working = true;
-
   const [ type, obj ] = queue.shift();
+  console.log(obj);
   await workSpreadsheet(type, obj);
   working = false;
 }
