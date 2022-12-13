@@ -48,6 +48,5 @@ export const studentAlert = async (inter: Interaction<CacheType>) => {
     }
     embed.setColor("Red").setTitle(result.value as string);
     await inter.reply({ embeds: [embed], ephemeral:true });
-    setTimeout(async () => await inter.deleteReply(), 3000);
     return true;
 }
