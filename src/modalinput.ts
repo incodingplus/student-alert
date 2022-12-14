@@ -35,9 +35,9 @@ export const studentJisi = async (inter:Interaction<CacheType>, channel:string, 
     const embed = new EmbedBuilder();
     let user = reg.test(member.nickname) ? member.nickname : member.user.username;
     let teacher = tReg.test(tMember.nickname) ? tMember.nickname : tMember.user.username;
-    if(!teacher || !user){
+    if(!tReg.test(teacher) || !reg.test(user)){
         embed.setColor('Red')
-        if(!teacher){
+        if(!tReg.test(teacher)){
             embed.setTitle('선생님만 메세지를 보낼 수 있습니다.');
         } else {
             embed.setTitle("이 유저는 적절한 학생이 아닙니다.");
