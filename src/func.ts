@@ -26,33 +26,42 @@ export type SF = () =>
     }[];
 }
 
+const getMinDate = (m:number, d:number) => {
+    let now = new Date();
+    let nowYear = now.getFullYear();
+    let minVal = Infinity;
+    let min = nowYear + 1;
+    for(let i = nowYear + 20; i >= nowYear - 20; i--){
+        let date = new Date(i, m - 1, d);
+        let dd = Math.abs(Number(date) - Number(now));
+        if(dd < minVal && date.getMonth() === m - 1 && date.getDate() === d){
+            minVal = dd;
+            min = i;
+        }
+    }
+    return min;
+}
+
 const getDate = (date: string, flag = false) => {
     const day = ["일", "월", "화", "수", "목", "금", "토"];
-    if (flag && !/^\d{2}-\d{2}$/.test(date)) {
+    if (flag && !/^\d{1,2}-\d{1,2}$/.test(date)) {
         return {
             status: false,
             value: "일시는 'MM-DD' 이런 형식으로 작성해주세요.",
         };
-    } else if (!flag && !/^\d{2}-\d{2}-\d{2}(:\d{2})?$/.test(date)) {
+    } else if (!flag && !/^\d{1,2}-\d{1,2}-\d{1,2}(:\d{1,2})?$/.test(date)) {
         return {
             status: false,
             value: "일시는 'MM-DD-HH' 또는 'MM-DD-HH:mm' 이런 형식으로 작성해주세요.",
         };
     }
-    let M = Number(date.slice(0, 2));
-    let d = Number(date.slice(3, 5));
-    let h = Number(date.slice(6, 8));
-    let m = Number(date.slice(9));
-    let realDate = new Date();
-    let compare = new Date(realDate);
-    compare.setFullYear(compare.getFullYear() + 1);
-    if (
-        Math.abs(Number(compare) - Date.now()) <
-        Math.abs(Number(realDate) - Date.now())
-    ) {
-        realDate.setFullYear(realDate.getFullYear() + 1);
-    }
-    realDate.setMonth(M - 1, d);
+    let nums = date.match(/\d+/g);
+    let M = Number(nums[0]);
+    let d = Number(nums[1]);
+    let h = Number(nums[2] ?? 0);
+    let m = Number(nums[3] ?? 0);
+    const y = getMinDate(M, d);
+    let realDate = new Date(y, M - 1, d);
     realDate.setHours(h, m);
     if (
         !(
