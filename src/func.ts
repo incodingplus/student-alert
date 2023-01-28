@@ -119,6 +119,30 @@ export const 신규: CF = (obj) => {
     };
 };
 
+export const 예약: CF = (obj) => {
+    const name = obj.find((v) => v.name === "이름").value as string;
+    const sub = obj.find((v) => v.name === "학년").value as string;
+    const date = obj.find((v) => v.name === "일시").value as string;
+    const other = (obj.find((v) => v.name === "특이사항")?.value as string) ?? "";
+    let resultDate = getDate(date);
+    if (!resultDate.status)
+        return {
+            status: false,
+            value: resultDate.value,
+        };
+    return {
+        status: true,
+        title: "상담 예약",
+        color: "DarkGold",
+        value: [
+            [`이름`, name],
+            [`학년`, sub],
+            [`일시`, resultDate.value],
+            [`특이사항`, other ? other : "없음"],
+        ],
+    };
+};
+
 export const 퇴원: CF = (obj) => {
     const name = obj.find((v) => v.name === "이름").value as string;
     const date = obj.find((v) => v.name === "일시").value as string;
@@ -139,6 +163,28 @@ export const 퇴원: CF = (obj) => {
             ["일시", resultDate.value],
             ["과목", sub],
             ["사유", other],
+        ],
+    };
+};
+
+export const 상담: CF = (obj) => {
+    const name = obj.find((v) => v.name === "이름").value as string;
+    const date = obj.find((v) => v.name === "일시").value as string;
+    const sub = obj.find((v) => v.name === "내용").value as string;
+    let resultDate = getDate(date, true);
+    if (!resultDate.status)
+        return {
+            status: false,
+            value: resultDate.value,
+        };
+    return {
+        status: true,
+        title: "상담 내용",
+        color: "Blurple",
+        value: [
+            ["이름", name],
+            ["일시", resultDate.value],
+            ["내용", sub],
         ],
     };
 };

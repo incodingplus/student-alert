@@ -1,7 +1,5 @@
 import './setting.js';
-import { 
-    ApplicationCommandType,
-    ContextMenuCommandBuilder,
+import {
     REST,
     Routes
 } from 'discord.js';
@@ -19,8 +17,8 @@ const commands = [
         ]
     },
   {
-    name: '신규',
-    description: '신규 학생 등록 공지',
+    name: '상담',
+    description: '학생 상담 내용 공지',
     options:[
         {
             name:'이름',
@@ -29,18 +27,14 @@ const commands = [
             required: true,
         },{
             name:'일시',
-            description:"'MM-DD-HH' 또는 'MM-DD-HH:mm' 이런 형식으로 날짜를 작성해주세요.",
+            description:"'MM-DD' 이런 형식으로 날짜를 작성해주세요.",
             type:3,
             required: true,
         },{
-            name:'과목',
-            description:'과목명을 작성해주세요.',
+            name:'내용',
+            description:'상담 내용을 작성해주세요.',
             type:3,
             required: true,
-        },{
-            name:'특이사항',
-            description:'특이사항이 있다면 작성해주세요.',
-            type:3,
         }
     ]
   },{
@@ -123,8 +117,32 @@ const commands = [
           name:'특이사항',
           description:'특이사항이 있다면 작성해주세요.',
           type:3,
-      }
-  ]
+      }]
+  },{
+    name: '예약',
+    description: '학생 상담 예약',
+    options:[
+        {
+            name:'이름',
+            description:'학생 이름을 작성해주세요.',
+            type:3,
+            required: true,
+        },{
+            name:'학년',
+            description:'학생의 학년을 작성해주세요.',
+            type:3,
+            required: true,
+        },{
+            name:'일시',
+            description:"'MM-DD-HH' 또는 'MM-DD-HH:mm' 이런 형식으로 날짜를 작성해주세요.",
+            type:3,
+            required: true,
+        },{
+            name:'특이사항',
+            description:'특이사항이 있다면 작성해주세요.',
+            type:3,
+        }
+    ]
   },{
     name: '결석',
     description: '결석 학생 공지',
@@ -189,7 +207,7 @@ const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
   try {
     console.log('Started refreshing application (/) commands.');
 
-    let test = await rest.put(Routes.applicationCommands(process.env.CLIENT_ID), { body: commands });
+    let test = await rest.put(Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.GUILD), { body: commands });
     console.log(test)
     console.log('Successfully reloaded application (/) commands.');
   } catch (error) {

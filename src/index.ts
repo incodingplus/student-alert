@@ -8,7 +8,6 @@ import {
     GatewayIntentBits,
     EmbedBuilder,
     Partials,
-    TextChannel
 } from "discord.js";
 import {
     studentAlert,
@@ -84,7 +83,7 @@ client.on("interactionCreate", async (inter) => {
             await inter.reply({ embeds: [embed], ephemeral:true });
             return;
         }
-        let bool = await studentAlert(inter, channelsArr[0], spreadsArr[0]);
+        let bool = await studentAlert(inter, spreadsArr[0]);
         if (!bool) bool = await studentJisi(inter, channelsArr[1], spreadsArr[1]);
         if (!bool) bool = await studentContext(inter);
     } catch (err) {
