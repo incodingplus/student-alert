@@ -2,7 +2,7 @@ import "./setting.js";
 import { addQueueSpread } from "./google.js";
 import fs from "fs/promises";
 import path from "path";
-import { channelsArr, dirname, spreadsArr } from "./setting.js";
+import { channelsArr, dirname, spreadsArr, constraintChannel } from "./setting.js";
 import {
     Client,
     GatewayIntentBits,
@@ -37,7 +37,7 @@ client.on("ready", async () => {
 
 client.on("messageCreate", async (msg) => {
     try {
-        if (!channelsArr.includes(msg.channelId)) return;
+        if (!constraintChannel.includes(msg.channelId)) return;
         if (msg.author.id !== process.env.CLIENT_ID) {
             await msg.delete();
             const embed = new EmbedBuilder()

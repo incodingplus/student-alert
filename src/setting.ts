@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 import type { QueueType } from './google.js';
 
 export const channelsArr = process.env.CHANNEL.split(',');
+export const constraintChannel = process.env.CONSTRAINT.split(',');
 export const spreadsArr = process.env.SPREAD_NAME.split(',');
 
 const getToday = (): string => {
