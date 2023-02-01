@@ -1,4 +1,4 @@
-import { 신규, 퇴원, 변경, 보충, 결석, 비대면, 상담, 예약 } from './func.js';
+import { 신규, 퇴원, 변경, 보충, 결석, 비대면, 상담, 예약, 기록 } from './func.js';
 import type { CF } from './func.js';
 import type {
     CacheType,
@@ -18,7 +18,8 @@ export const command = new Map<string, [CF, string]>([
     ["결석", [결석, channelsArr[0]]],
     ["상담", [상담, channelsArr[0]]],
     ["비대면", [비대면, channelsArr[0]]],
-    ["예약", [예약, channelsArr[2]]]
+    ["예약", [예약, channelsArr[2]]],
+    ["기록", [기록, channelsArr[2]]],
 ]);
 
 
@@ -29,6 +30,7 @@ export const studentAlert = async (inter: Interaction<CacheType>, spreadName:str
     const CFArr = command.get(inter.commandName);
     if (inter.channelId !== CFArr[1]) return false;
     const embed = new EmbedBuilder();
+    console.log(inter.options.data);
     const result = CFArr[0](inter.options.data);
     if (result.status) {
         const type = result.title;

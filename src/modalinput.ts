@@ -75,15 +75,15 @@ export const studentJisi = async (inter:Interaction<CacheType>, channel:string, 
         },
         time:60000,
     });
-    const result:[string, string][] = [
-        ['이름', user.match(reg)[1]],
-        ['선생님', teacher.match(tReg)[1]],
-        ...data.value.map(v => {
+    const result:[string, string, string][] = [
+        ['이름', user.match(reg)[1], "3"],
+        ['선생님', teacher.match(tReg)[1], "4"],
+        ...data.value.map((v, i) => {
             let val = modalInter.fields.getTextInputValue(v.id);
             if(v.check){
                 val = v.check(val).value;
             }
-            return [v.view, val] as [string, string]
+            return [v.view, val, String(i + 5)] as [string, string,string]
         })
     ]
     embed.setDescription(
@@ -94,7 +94,7 @@ export const studentJisi = async (inter:Interaction<CacheType>, channel:string, 
     });
     const message = await modalInter.fetchReply();
     await addQueueSpread('add', {
-        id: message.id, type:inter.commandName, inputValue:[['아이디', user],...result], spreadName
+        id: message.id, type:inter.commandName, inputValue:[['아이디', user,"2"],...result], spreadName
     });
     return true;
 }

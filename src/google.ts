@@ -22,7 +22,7 @@ const spreadsheetInfo = await googleSheet.spreadsheets.get({
 export interface QueueType{
   id:string;
   type?:string;
-  inputValue?:[string,string][]
+  inputValue?:[string,string,string][]
   spreadName:string;
 };
 
@@ -32,8 +32,8 @@ const queue:[string, QueueType][] = [];
 /**
  * 값을 입력받아 스프레드시트에서 A열의 몇번째 행에 해당 값이 있는지를 반환해주는 함수
  * 값을 입력하지 않으면 스프레드시트에서 비어있는 부분의 행 번호를 알려준다.
- * @param {string} value
- * @returns 열 번호를 반환
+ * @param {QueueType} obj
+ * @returns {number} 열 번호를 반환
  */
 const getRownumByValue = async (obj:QueueType) => {
   const sheet = await googleSheet.spreadsheets.values.get({

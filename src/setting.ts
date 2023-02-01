@@ -26,14 +26,20 @@ export const spreadMap = new Map<string, (obj:QueueType)=>string[]>([
         const requestBody: string[] = [id];
         if(type) requestBody.push(type);
         inputValue.forEach((data) => {
-            if (data[0] == "일시") {
-            const dates = data[1].split(" → ");
-            dates.length - 1
-                ? requestBody.push(...dates)
-                : requestBody.push(...dates, "");
-            } else requestBody.push(data[1]);
+            if (data[0] === "일시") {
+                const dates = data[1].split(" → ");
+                let row = data[2].split(',').map(v => Number(v));
+                requestBody[row[0]] = dates[0];
+                if(row[1]) requestBody[row[1]] = dates[1];
+            } else if(data[0] === '아이디'){
+                let pushData = [data[1], data[1].replace(/\d+/, '')];
+                let row = data[2].split(',').map(v => Number(v));
+                for(let i = 0; i < row.length; i++){
+                    requestBody[row[i]] = pushData[i];
+                }
+            } else requestBody[Number(data[2])] = data[1];
         });
-        requestBody.push(getToday());
+        requestBody[9] = getToday();
         return requestBody;
     }],
     [spreadsArr[1], obj => {

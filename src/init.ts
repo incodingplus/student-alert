@@ -10,7 +10,7 @@ const commands = [
         options: [
             {
                 name: '이름',
-                description: '학생 이름을 선택해주세요.',
+                description: '학생 아이디를 선택해주세요.',
                 type: 6,
                 required: true,
             }
@@ -24,12 +24,17 @@ const commands = [
                 description: '학생 이름을 작성해주세요.',
                 type: 3,
                 required: true,
-            }, {
+            },{
                 name: '일시',
                 description: "'MM-DD-HH' 또는 'MM-DD-HH:mm' 이런 형식으로 날짜를 작성해주세요.",
                 type: 3,
                 required: true,
-            }, {
+            },{
+                name: '학년',
+                description: '학생의 학년을 작성해주세요.',
+                type: 3,
+                required: true,
+            },{
                 name: '과목',
                 description: '과목명을 작성해주세요.',
                 type: 3,
@@ -45,9 +50,9 @@ const commands = [
         description: '학생 상담 내용 공지',
         options: [
             {
-                name: '이름',
-                description: '학생 이름을 작성해주세요.',
-                type: 3,
+                name: '아이디',
+                description: '학생 아이디를 선택해주세요.',
+                type: 6,
                 required: true,
             }, {
                 name: '일시',
@@ -66,9 +71,9 @@ const commands = [
         description: '퇴원 학생 공지',
         options: [
             {
-                name: '이름',
-                description: '학생 이름을 작성해주세요.',
-                type: 3,
+                name: '아이디',
+                description: '학생 아이디를 선택해주세요.',
+                type: 6,
                 required: true,
             }, {
                 name: '일시',
@@ -92,9 +97,9 @@ const commands = [
         description: '수업 변경 공지',
         options: [
             {
-                name: '이름',
-                description: '학생 이름을 작성해주세요.',
-                type: 3,
+                name: '아이디',
+                description: '학생 아이디를 선택해주세요.',
+                type: 6,
                 required: true,
             }, {
                 name: '기존일시',
@@ -123,9 +128,9 @@ const commands = [
         description: '보충 수업 공지',
         options: [
             {
-                name: '이름',
-                description: '학생 이름을 작성해주세요.',
-                type: 3,
+                name: '아이디',
+                description: '학생 아이디를 선택해주세요.',
+                type: 6,
                 required: true,
             }, {
                 name: '일시',
@@ -152,13 +157,13 @@ const commands = [
                 type: 3,
                 required: true,
             }, {
-                name: '학년',
-                description: '학생의 학년을 작성해주세요.',
-                type: 3,
-                required: true,
-            }, {
                 name: '일시',
                 description: "'MM-DD-HH' 또는 'MM-DD-HH:mm' 이런 형식으로 날짜를 작성해주세요.",
+                type: 3,
+                required: true,
+            },{
+                name: '학년',
+                description: '학생의 학년을 작성해주세요.',
                 type: 3,
                 required: true,
             }, {
@@ -167,14 +172,40 @@ const commands = [
                 type: 3,
             }
         ]
-    }, {
-        name: '결석',
-        description: '결석 학생 공지',
+    },{
+        name: '기록',
+        description: '학생 상담 기록',
         options: [
             {
                 name: '이름',
                 description: '학생 이름을 작성해주세요.',
                 type: 3,
+                required: true,
+            }, {
+                name: '일시',
+                description: "'MM-DD-HH' 또는 'MM-DD-HH:mm' 이런 형식으로 날짜를 작성해주세요.",
+                type: 3,
+                required: true,
+            },{
+                name: '학년',
+                description: '학생의 학년을 작성해주세요.',
+                type: 3,
+                required: true,
+            }, {
+                name: '내용',
+                description: '상담 내용을 작성해주세요.',
+                type: 3,
+                required: true,
+            }
+        ]
+    }, {
+        name: '결석',
+        description: '결석 학생 공지',
+        options: [
+            {
+                name: '아이디',
+                description: '학생 아이디를 선택해주세요.',
+                type: 6,
                 required: true,
             }, {
                 name: '일시',
@@ -198,9 +229,9 @@ const commands = [
         description: '비대면 수업 학생 공지',
         options: [
             {
-                name: '이름',
-                description: '학생 이름을 작성해주세요.',
-                type: 3,
+                name: '아이디',
+                description: '학생 아이디를 선택해주세요.',
+                type: 6,
                 required: true,
             }, {
                 name: '일시',

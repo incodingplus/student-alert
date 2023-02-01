@@ -1,7 +1,8 @@
 import type {
     CommandInteractionOption,
     CacheType,
-    ColorResolvable
+    ColorResolvable,
+    GuildMember
 } from 'discord.js';
 
 export type CF = (obj: readonly CommandInteractionOption<CacheType>[]) =>
@@ -9,7 +10,7 @@ export type CF = (obj: readonly CommandInteractionOption<CacheType>[]) =>
     status: true;
     title?: string;
     color?: ColorResolvable;
-    value: [string, string][];
+    value: [string, string, string][];
   }
 | { status: false; value: string };
 
@@ -25,6 +26,13 @@ export type SF = () =>
         check?:(str:string)=>({status:boolean;value:string})
     }[];
 }
+
+const getUser = (id:GuildMember) => {
+    const studentReg = /^([가-힣]+)\d{5}$/;
+    return studentReg.test(id.nickname) ? id.nickname :
+        studentReg.test(id.user.username) ? id.user.username : '';
+};
+
 
 const getMinDate = (m:number, d:number) => {
     let now = new Date();
@@ -98,6 +106,7 @@ const getDate = (date: string, flag = false) => {
 export const 신규: CF = (obj) => {
     const name = obj.find((v) => v.name === "이름").value as string;
     const date = obj.find((v) => v.name === "일시").value as string;
+    const sub2 = obj.find((v) => v.name === "학년").value as string;
     const sub = obj.find((v) => v.name === "과목").value as string;
     const other = (obj.find((v) => v.name === "특이사항")?.value as string) ?? "";
     let resultDate = getDate(date);
@@ -111,10 +120,11 @@ export const 신규: CF = (obj) => {
         title: "신규",
         color: "Gold",
         value: [
-            [`이름`, name],
-            [`일시`, resultDate.value],
-            [`과목`, sub],
-            [`특이사항`, other ? other : "없음"],
+            [`이름`, name, "3"],
+            [`일시`, resultDate.value, "4"],
+            [`학년`, sub2, "7"],
+            [`과목`, sub, "6"],
+            [`특이사항`, other ? other : "없음", "8"],
         ],
     };
 };
@@ -135,16 +145,45 @@ export const 예약: CF = (obj) => {
         title: "상담 예약",
         color: "DarkGold",
         value: [
-            [`이름`, name],
-            [`학년`, sub],
-            [`일시`, resultDate.value],
-            [`특이사항`, other ? other : "없음"],
+            [`이름`, name, "2"],
+            [`일시`, resultDate.value, "3"],
+            [`학년`, sub, "7"],
+            [`특이사항`, other ? other : "없음", "8"],
+        ],
+    };
+};
+
+export const 기록: CF = (obj) => {
+    const name = obj.find((v) => v.name === "이름").value as string;
+    const sub = obj.find((v) => v.name === "학년").value as string;
+    const date = obj.find((v) => v.name === "일시").value as string;
+    const other = (obj.find((v) => v.name === "내용").value as string) ?? "";
+    let resultDate = getDate(date);
+    if (!resultDate.status)
+        return {
+            status: false,
+            value: resultDate.value,
+        };
+    return {
+        status: true,
+        title: "상담 기록",
+        color: "Yellow",
+        value: [
+            [`이름`, name, "3"],
+            [`일시`, resultDate.value, "4"],
+            [`학년`, sub, "7"],
+            [`내용`, other, "8"],
         ],
     };
 };
 
 export const 퇴원: CF = (obj) => {
-    const name = obj.find((v) => v.name === "이름").value as string;
+    const id = obj.find((v) => v.name === "아이디").member as GuildMember;
+    const name = getUser(id);
+    if(!name) return {
+        status: false,
+        value: '학생 아이디를 써주세요.'
+    }
     const date = obj.find((v) => v.name === "일시").value as string;
     const sub = obj.find((v) => v.name === "과목").value as string;
     const other = obj.find((v) => v.name === "사유").value as string;
@@ -159,16 +198,21 @@ export const 퇴원: CF = (obj) => {
         title: "퇴원",
         color: "Grey",
         value: [
-            ["이름", name],
-            ["일시", resultDate.value],
-            ["과목", sub],
-            ["사유", other],
+            ["아이디", name, "2,3"],
+            ["일시", resultDate.value, "4"],
+            ["과목", sub, "6"],
+            ["사유", other, "8"],
         ],
     };
 };
 
 export const 상담: CF = (obj) => {
-    const name = obj.find((v) => v.name === "이름").value as string;
+    const id = obj.find((v) => v.name === "아이디").member as GuildMember;
+    const name = getUser(id);
+    if(!name) return {
+        status: false,
+        value: '학생 아이디를 써주세요.'
+    }
     const date = obj.find((v) => v.name === "일시").value as string;
     const sub = obj.find((v) => v.name === "내용").value as string;
     let resultDate = getDate(date, true);
@@ -182,15 +226,20 @@ export const 상담: CF = (obj) => {
         title: "상담 내용",
         color: "Blurple",
         value: [
-            ["이름", name],
-            ["일시", resultDate.value],
-            ["내용", sub],
+            ["아이디", name, "2,3"],
+            ["일시", resultDate.value, "4"],
+            ["내용", sub, "8"],
         ],
     };
 };
 
 export const 보충: CF = (obj) => {
-    const name = obj.find((v) => v.name === "이름").value as string;
+    const id = obj.find((v) => v.name === "아이디").member as GuildMember;
+    const name = getUser(id);
+    if(!name) return {
+        status: false,
+        value: '학생 아이디를 써주세요.'
+    }
     const date = obj.find((v) => v.name === "일시").value as string;
     const sub = obj.find((v) => v.name === "과목").value as string;
     const other = (obj.find((v) => v.name === "특이사항")?.value as string) ?? "";
@@ -205,16 +254,21 @@ export const 보충: CF = (obj) => {
         title: "보충",
         color: "Purple",
         value: [
-            [`이름`, name],
-            [`일시`, resultDate.value],
-            [`과목`, sub],
-            [`특이사항`, other ? other : "없음"],
+            [`아이디`, name, "2,3"],
+            [`일시`, resultDate.value, "4"],
+            [`과목`, sub, "6"],
+            [`특이사항`, other ? other : "없음", "8"],
         ],
     };
 };
 
 export const 결석: CF = (obj) => {
-    const name = obj.find((v) => v.name === "이름").value as string;
+    const id = obj.find((v) => v.name === "아이디").member as GuildMember;
+    const name = getUser(id);
+    if(!name) return {
+        status: false,
+        value: '학생 아이디를 써주세요.'
+    }
     const date = obj.find((v) => v.name === "일시").value as string;
     const sub = obj.find((v) => v.name === "과목").value as string;
     const other = obj.find((v) => v.name === "사유").value as string;
@@ -229,16 +283,21 @@ export const 결석: CF = (obj) => {
         title: "결석",
         color: "Green",
         value: [
-            [`이름`, name],
-            [`일시`, resultDate.value],
-            [`과목`, sub],
-            [`사유`, other],
+            [`아이디`, name, "2,3"],
+            [`일시`, resultDate.value, "4"],
+            [`과목`, sub, "6"],
+            [`사유`, other, "8"],
         ],
     };
 };
 
 export const 변경: CF = (obj) => {
-    const name = obj.find((v) => v.name === "이름").value as string;
+    const id = obj.find((v) => v.name === "아이디").member as GuildMember;
+    const name = getUser(id);
+    if(!name) return {
+        status: false,
+        value: '학생 아이디를 써주세요.'
+    }
     const date1 = obj.find((v) => v.name === "기존일시").value as string;
     const date2 = obj.find((v) => v.name === "변경일시").value as string;
     const sub = obj.find((v) => v.name === "과목").value as string;
@@ -260,16 +319,21 @@ export const 변경: CF = (obj) => {
         title: "수업시간변경",
         color: "Blue",
         value: [
-            [`이름`, name],
-            [`일시`, `${resultDate1.value} → ${resultDate2.value}`],
-            [`과목`, sub],
-            [`사유`, other],
+            [`아이디`, name, "2,3"],
+            [`일시`, `${resultDate1.value} → ${resultDate2.value}`, "4,5"],
+            [`과목`, sub, "6"],
+            [`사유`, other, "8"],
         ],
     };
 };
 
 export const 비대면: CF = (obj) => {
-    const name = obj.find((v) => v.name === "이름").value as string;
+    const id = obj.find((v) => v.name === "아이디").member as GuildMember;
+    const name = getUser(id);
+    if(!name) return {
+        status: false,
+        value: '학생 아이디를 써주세요.'
+    }
     const date = obj.find((v) => v.name === "일시").value as string;
     const sub = obj.find((v) => v.name === "과목").value as string;
     const other = obj.find((v) => v.name === "사유").value as string;
@@ -284,10 +348,10 @@ export const 비대면: CF = (obj) => {
         title: "비대면",
         color: "Orange",
         value: [
-            [`이름`, name],
-            [`일시`, resultDate.value],
-            [`과목`, sub],
-            [`사유`, other],
+            [`아이디`, name, "2,3"],
+            [`일시`, resultDate.value, "4"],
+            [`과목`, sub, "6"],
+            [`사유`, other, "8"],
         ],
     };
 };
