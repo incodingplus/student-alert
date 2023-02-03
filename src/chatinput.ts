@@ -30,7 +30,6 @@ export const studentAlert = async (inter: Interaction<CacheType>, spreadName:str
     const CFArr = command.get(inter.commandName);
     if (inter.channelId !== CFArr[1]) return false;
     const embed = new EmbedBuilder();
-    console.log(inter.options.data);
     const result = CFArr[0](inter.options.data);
     if (result.status) {
         const type = result.title;

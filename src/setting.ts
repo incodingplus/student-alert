@@ -7,6 +7,7 @@ import type { QueueType } from './google.js';
 export const channelsArr = process.env.CHANNEL.split(',');
 export const constraintChannel = process.env.CONSTRAINT.split(',');
 export const spreadsArr = process.env.SPREAD_NAME.split(',');
+export const DEFAULT_ID = process.env.DEFAULT_ID ?? '학생 알리미';
 
 const getToday = (): string => {
     let today = new Date();

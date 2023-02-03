@@ -64,6 +64,10 @@ const commands = [
                 description: '상담 내용을 작성해주세요.',
                 type: 3,
                 required: true,
+            }, {
+                name: '이름',
+                description: '필요한 경우 이름을 작성해주세요.',
+                type: 3,
             }
         ]
     }, {
@@ -90,6 +94,10 @@ const commands = [
                 description: '퇴원 사유를 작성해주세요.',
                 type: 3,
                 required: true,
+            }, {
+                name: '이름',
+                description: '필요한 경우 이름을 작성해주세요.',
+                type: 3,
             }
         ]
     }, {
@@ -121,6 +129,10 @@ const commands = [
                 description: '수업 변경 사유를 작성해주세요.',
                 required: true,
                 type: 3,
+            }, {
+                name: '이름',
+                description: '필요한 경우 이름을 작성해주세요.',
+                type: 3,
             }
         ]
     }, {
@@ -146,7 +158,12 @@ const commands = [
                 name: '특이사항',
                 description: '특이사항이 있다면 작성해주세요.',
                 type: 3,
-            }]
+            }, {
+                name: '이름',
+                description: '필요한 경우 이름을 작성해주세요.',
+                type: 3,
+            }
+        ]
     }, {
         name: '예약',
         description: '학생 상담 예약',
@@ -222,6 +239,10 @@ const commands = [
                 description: '결석 사유를 작성해주세요.',
                 type: 3,
                 required: true,
+            }, {
+                name: '이름',
+                description: '필요한 경우 이름을 작성해주세요.',
+                type: 3,
             }
         ]
     }, {
@@ -248,6 +269,10 @@ const commands = [
                 description: '비대면 수업 사유를 작성해주세요.',
                 type: 3,
                 required: true,
+            }, {
+                name: '이름',
+                description: '필요한 경우 이름을 작성해주세요.',
+                type: 3,
             }
         ]
     }, {

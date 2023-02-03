@@ -5,6 +5,8 @@ import type {
     GuildMember
 } from 'discord.js';
 
+import { DEFAULT_ID } from './setting.js';
+
 export type CF = (obj: readonly CommandInteractionOption<CacheType>[]) =>
 | {
     status: true;
@@ -27,10 +29,19 @@ export type SF = () =>
     }[];
 }
 
-const getUser = (id:GuildMember) => {
-    const studentReg = /^([가-힣]+)\d{5}$/;
-    return studentReg.test(id.nickname) ? id.nickname :
-        studentReg.test(id.user.username) ? id.user.username : '';
+const studentReg = /^([가-힣]+)\d{5}$/;
+
+const getUser = (obj:readonly CommandInteractionOption<CacheType>[]) => {
+    const id = obj.find((v) => v.name === "아이디").member as GuildMember;
+    let name = obj.find((v) => v.name === "이름")?.value as string;
+    if(studentReg.test(id.nickname)){
+        return id.nickname;
+    } else if(studentReg.test(id.user.username)){
+        return id.user.username;
+    } else if(id.user.username === DEFAULT_ID){
+        return name;
+    }
+    return '';
 };
 
 
@@ -178,8 +189,7 @@ export const 기록: CF = (obj) => {
 };
 
 export const 퇴원: CF = (obj) => {
-    const id = obj.find((v) => v.name === "아이디").member as GuildMember;
-    const name = getUser(id);
+    const name = getUser(obj);
     if(!name) return {
         status: false,
         value: '학생 아이디를 써주세요.'
@@ -198,7 +208,7 @@ export const 퇴원: CF = (obj) => {
         title: "퇴원",
         color: "Grey",
         value: [
-            ["아이디", name, "2,3"],
+            (studentReg.test(name) ? ["아이디", name,"2,3"] : ["이름", name, "3"]),
             ["일시", resultDate.value, "4"],
             ["과목", sub, "6"],
             ["사유", other, "8"],
@@ -207,8 +217,7 @@ export const 퇴원: CF = (obj) => {
 };
 
 export const 상담: CF = (obj) => {
-    const id = obj.find((v) => v.name === "아이디").member as GuildMember;
-    const name = getUser(id);
+    const name = getUser(obj);
     if(!name) return {
         status: false,
         value: '학생 아이디를 써주세요.'
@@ -226,7 +235,7 @@ export const 상담: CF = (obj) => {
         title: "상담 내용",
         color: "Blurple",
         value: [
-            ["아이디", name, "2,3"],
+            (studentReg.test(name) ? ["아이디", name,"2,3"] : ["이름", name, "3"]),
             ["일시", resultDate.value, "4"],
             ["내용", sub, "8"],
         ],
@@ -234,8 +243,7 @@ export const 상담: CF = (obj) => {
 };
 
 export const 보충: CF = (obj) => {
-    const id = obj.find((v) => v.name === "아이디").member as GuildMember;
-    const name = getUser(id);
+    const name = getUser(obj);
     if(!name) return {
         status: false,
         value: '학생 아이디를 써주세요.'
@@ -254,7 +262,7 @@ export const 보충: CF = (obj) => {
         title: "보충",
         color: "Purple",
         value: [
-            [`아이디`, name, "2,3"],
+            (studentReg.test(name) ? ["아이디", name,"2,3"] : ["이름", name, "3"]),
             [`일시`, resultDate.value, "4"],
             [`과목`, sub, "6"],
             [`특이사항`, other ? other : "없음", "8"],
@@ -263,8 +271,7 @@ export const 보충: CF = (obj) => {
 };
 
 export const 결석: CF = (obj) => {
-    const id = obj.find((v) => v.name === "아이디").member as GuildMember;
-    const name = getUser(id);
+    const name = getUser(obj);
     if(!name) return {
         status: false,
         value: '학생 아이디를 써주세요.'
@@ -283,7 +290,7 @@ export const 결석: CF = (obj) => {
         title: "결석",
         color: "Green",
         value: [
-            [`아이디`, name, "2,3"],
+            (studentReg.test(name) ? ["아이디", name,"2,3"] : ["이름", name, "3"]),
             [`일시`, resultDate.value, "4"],
             [`과목`, sub, "6"],
             [`사유`, other, "8"],
@@ -292,8 +299,7 @@ export const 결석: CF = (obj) => {
 };
 
 export const 변경: CF = (obj) => {
-    const id = obj.find((v) => v.name === "아이디").member as GuildMember;
-    const name = getUser(id);
+    const name = getUser(obj);
     if(!name) return {
         status: false,
         value: '학생 아이디를 써주세요.'
@@ -319,7 +325,7 @@ export const 변경: CF = (obj) => {
         title: "수업시간변경",
         color: "Blue",
         value: [
-            [`아이디`, name, "2,3"],
+            (studentReg.test(name) ? ["아이디", name,"2,3"] : ["이름", name, "3"]),
             [`일시`, `${resultDate1.value} → ${resultDate2.value}`, "4,5"],
             [`과목`, sub, "6"],
             [`사유`, other, "8"],
@@ -328,8 +334,7 @@ export const 변경: CF = (obj) => {
 };
 
 export const 비대면: CF = (obj) => {
-    const id = obj.find((v) => v.name === "아이디").member as GuildMember;
-    const name = getUser(id);
+    const name = getUser(obj);
     if(!name) return {
         status: false,
         value: '학생 아이디를 써주세요.'
@@ -348,7 +353,7 @@ export const 비대면: CF = (obj) => {
         title: "비대면",
         color: "Orange",
         value: [
-            [`아이디`, name, "2,3"],
+            (studentReg.test(name) ? ["아이디", name,"2,3"] : ["이름", name, "3"]),
             [`일시`, resultDate.value, "4"],
             [`과목`, sub, "6"],
             [`사유`, other, "8"],
