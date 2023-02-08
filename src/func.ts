@@ -156,8 +156,8 @@ export const 예약: CF = (obj) => {
         title: "상담 예약",
         color: "DarkGold",
         value: [
-            [`이름`, name, "2"],
-            [`일시`, resultDate.value, "3"],
+            [`이름`, name, "3"],
+            [`일시`, resultDate.value, "4"],
             [`학년`, sub, "7"],
             [`특이사항`, other ? other : "없음", "8"],
         ],
