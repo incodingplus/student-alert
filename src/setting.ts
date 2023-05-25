@@ -3,6 +3,7 @@ dotenv.config();
 import path from 'path';
 import { fileURLToPath } from 'url';
 import type { QueueType } from './google.js';
+import fs from 'fs/promises'
 
 export const channelsArr = process.env.CHANNEL.split(',');
 export const constraintChannel = process.env.CONSTRAINT.split(',');
@@ -21,6 +22,12 @@ const getToday = (): string => {
 };
 
 export const dirname = path.dirname(fileURLToPath(import.meta.url));
+
+try{
+    await fs.access(path.resolve(dirname, '../logs'))
+} catch(err){
+    await fs.mkdir(path.resolve(dirname, '../logs'));
+}
 export const spreadMap = new Map<string, (obj:QueueType)=>string[]>([
     [spreadsArr[0], obj => {
         const { id, type, inputValue } = obj;

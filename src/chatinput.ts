@@ -41,7 +41,7 @@ export const studentAlert = async (inter: Interaction<CacheType>, spreadName:str
             .setTitle(`[${result.title}]`)
             .setDescription(
                 result.value
-                    .map((v, i) => `**${i + 1}. ${v[0]} : **${v[1]}`)
+                    .map((v, i) => `**${i + 1}.** **${v[0]}** : ${v[1]}`)
                     .join("\n\n")
             );
         await inter.reply({ embeds: [embed] });
