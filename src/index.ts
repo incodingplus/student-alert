@@ -1,5 +1,5 @@
 import "./setting.js";
-import { addQueueSpread } from "./google.js";
+import { QueueType, addQueueSpread } from "./google.js";
 import fs from "fs/promises";
 import path from "path";
 import { channelsArr, dirname, spreadsArr, constraintChannel } from "./setting.js";
@@ -21,8 +21,6 @@ import {
     studentContext
 } from './contextmenu.js'
 
-console.log(dirname);
-
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
@@ -34,6 +32,15 @@ const client = new Client({
 
 client.on("ready", async () => {
     console.log('준비 완료');
+    try{
+        const text = await fs.readFile(path.resolve(dirname, '../logs/todo.json'), { encoding:'utf-8'});
+        const json = JSON.parse(text) as [string, QueueType][];
+        for(let i of json){
+            await addQueueSpread(...i);
+        }
+    } catch(err){
+        console.log(err);
+    }
 });
 
 client.on("messageCreate", async (msg) => {

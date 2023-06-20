@@ -110,7 +110,7 @@ export const addQueueSpread = async (_type:string, _obj:QueueType) => {
       working = false;
     } catch(err){
       count += 1;
-      await new Promise(res => setTimeout(res, 10_000));
+      await new Promise(res => setTimeout(res, 3000));
     }
   }while(working && count < 5);
   if(count === 5){
