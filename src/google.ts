@@ -101,8 +101,20 @@ const workSpreadsheet = async (type:string, obj:QueueType) => {
 export const addQueueSpread = async (_type:string, _obj:QueueType) => {
   queue.push([_type, _obj]);
   if(working) return;
+  let count = 0;
   working = true;
   const [ type, obj ] = queue.shift();
-  await workSpreadsheet(type, obj);
-  working = false;
+  do{
+    try{
+      await workSpreadsheet(type, obj);
+      working = false;
+    } catch(err){
+      count += 1;
+      await new Promise(res => setTimeout(res, 10_000));
+    }
+  }while(working && count < 5);
+  if(count === 5){
+    await fs.writeFile(path.resolve(dirname, '../logs/todo.json'), JSON.stringify([[type, obj], ...queue]));
+    process.exit(1);
+  }
 }

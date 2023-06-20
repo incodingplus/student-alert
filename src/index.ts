@@ -21,6 +21,7 @@ import {
     studentContext
 } from './contextmenu.js'
 
+console.log(dirname);
 
 const client = new Client({
     intents: [
