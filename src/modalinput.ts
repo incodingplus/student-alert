@@ -25,17 +25,19 @@ export const studentJisi = async (inter:Interaction<CacheType>, channel:string, 
     if (inter.channelId !== channel) return false;
     const reg = /^([가-힣]+)\d{5}$/;
     const tReg = /^([가-힣]+)\s선생님/;
-    const data = command.get(inter.commandName)();
+    const commandFunc = command.get(inter.commandName);
+    if(!commandFunc)return false;
+    const data = commandFunc();
     const modal = new ModalBuilder()
         .setCustomId(inter.commandName)
-        .setTitle(data.title);
+        .setTitle(data.title ?? '');
 
     let member = inter.options.data[0].member as GuildMember;
     let tMember = inter.member as GuildMember;
     const embed = new EmbedBuilder();
-    let user = reg.test(member.nickname) ? member.nickname : member.user.username;
-    let teacher = tReg.test(tMember.nickname) ? tMember.nickname : tMember.user.username;
-    if(!tReg.test(teacher) || !reg.test(user)){
+    let user = (reg.test(member.nickname ?? '') ? member.nickname : member.user.username) ?? '';
+    let teacher = (tReg.test(tMember.nickname ?? '') ? tMember.nickname : tMember.user.username) ?? '';
+    if(!tReg.test(teacher) || !reg.test(user ?? '')){
         embed.setColor('Red')
         if(!tReg.test(teacher)){
             embed.setTitle('선생님만 메세지를 보낼 수 있습니다.');
@@ -46,7 +48,7 @@ export const studentJisi = async (inter:Interaction<CacheType>, channel:string, 
         return;
     }
     embed
-        .setColor(data.color)
+        .setColor(data.color ?? 'Random')
         .setTitle(`[${data.title}]`);
     const arr:ActionRowBuilder<TextInputBuilder>[] = [];
     for(let i of data.value){
@@ -76,8 +78,8 @@ export const studentJisi = async (inter:Interaction<CacheType>, channel:string, 
         time:60000,
     });
     const result:[string, string, string][] = [
-        ['이름', user.match(reg)[1], "3"],
-        ['선생님', teacher.match(tReg)[1], "4"],
+        ['이름', user.match(reg)?.[1] ?? '', "3"],
+        ['선생님', teacher.match(tReg)?.[1] ?? '', "4"],
         ...data.value.map((v, i) => {
             let val = modalInter.fields.getTextInputValue(v.id);
             if(v.check){

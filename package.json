@@ -2,12 +2,12 @@
   "name": "student-alert",
   "version": "1.0.0",
   "description": "디스코드 학생 알리미 봇 입니다.",
-  "main": "dist/index.js",
   "type": "module",
   "scripts": {
-    "start": "node .",
-    "init": "node dist/init.js",
-    "test":"node dist/test.js"
+    "start": "bun src/start.ts",
+    "index": "bun src/index.ts",
+    "init": "bun src/init.ts",
+    "test": "bun src/test.ts"
   },
   "repository": {
     "type": "git",
@@ -23,5 +23,8 @@
     "@googleapis/sheets": "^4.0.2",
     "discord.js": "^14.11.0",
     "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "bun-types": "^0.8.1"
   }
 }

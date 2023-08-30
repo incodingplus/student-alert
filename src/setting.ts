@@ -5,9 +5,9 @@ import { fileURLToPath } from 'url';
 import type { QueueType } from './google.js';
 import fs from 'fs/promises'
 
-export const channelsArr = process.env.CHANNEL.split(',');
-export const constraintChannel = process.env.CONSTRAINT.split(',');
-export const spreadsArr = process.env.SPREAD_NAME.split(',');
+export const channelsArr = (process.env.CHANNEL as string).split(',');
+export const constraintChannel = (process.env.CONSTRAINT as string).split(',');
+export const spreadsArr = (process.env.SPREAD_NAME as string).split(',');
 export const DEFAULT_ID = process.env.DEFAULT_ID ?? '학생 알리미';
 
 const getToday = (): string => {
@@ -33,7 +33,7 @@ export const spreadMap = new Map<string, (obj:QueueType)=>string[]>([
         const { id, type, inputValue } = obj;
         const requestBody: string[] = [id];
         if(type) requestBody.push(type);
-        inputValue.forEach((data) => {
+        (inputValue ?? []).forEach((data) => {
             if (data[0] === "일시") {
                 const dates = data[1].split(" → ");
                 let row = data[2].split(',').map(v => Number(v));
@@ -54,7 +54,7 @@ export const spreadMap = new Map<string, (obj:QueueType)=>string[]>([
         const { id, type, inputValue } = obj;
         const requestBody: string[] = [id];
         if(type) requestBody.push(type);
-        requestBody.push(...inputValue.map(v => v[1]), getToday());
+        requestBody.push(...(inputValue ?? []).map(v => v[1]), getToday());
         return requestBody;
     }]
 ]);

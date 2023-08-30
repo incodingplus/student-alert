@@ -83,7 +83,8 @@ client.on('messageDelete', async inter => {
 client.on("interactionCreate", async (inter) => {
     try {
         if (!inter.isChatInputCommand() && !inter.isMessageContextMenuCommand()) return;
-        if (inter.channel.parentId !== process.env.CATEGORY) {
+        //@ts-ignore
+        if (inter?.channel?.parentId !== process.env.CATEGORY) {
             const embed = new EmbedBuilder();
             embed
                 .setColor("Red")
@@ -92,8 +93,8 @@ client.on("interactionCreate", async (inter) => {
             return;
         }
         let bool = await studentAlert(inter, spreadsArr[0]);
-        if (!bool) bool = await studentJisi(inter, channelsArr[1], spreadsArr[1]);
-        if (!bool) bool = await studentContext(inter);
+        if (!bool) bool = (await studentJisi(inter, channelsArr[1], spreadsArr[1])) ?? false;
+        if (!bool) bool = (await studentContext(inter)) ?? false;
     } catch (err) {
         console.error(err);
         await fs.writeFile(

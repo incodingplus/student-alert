@@ -4,11 +4,11 @@ import path from "path";
 import { dirname, spreadMap } from "./setting.js";
 
 const raw = await fs.readFile(
-  path.resolve(dirname, "../credential", process.env.SPREAD_PATH),
+  path.resolve(dirname, "../credential", process.env.SPREAD_PATH as string),
   { encoding: "utf-8" }
 );
 const json = JSON.parse(raw);
-const authorize = new auth.JWT(json.client_email, null, json.private_key, [
+const authorize = new auth.JWT(json.client_email, undefined, json.private_key, [
   "https://www.googleapis.com/auth/spreadsheets",
 ]);
 const googleSheet = sheets({
@@ -41,6 +41,7 @@ const getRownumByValue = async (obj:QueueType) => {
     range: obj.spreadName,
   });
   const sheetData = sheet.data.values;
+  if(!sheetData) return 0;
   for (let rowNum = 0; rowNum < sheetData.length; rowNum++) {
     if (sheetData[rowNum][0] === obj.id) return rowNum;
   }
@@ -59,12 +60,16 @@ const addData = async (val: string[], spreadsheetName:string) => {
 };
 
 const addToSpreadsheet = async (obj:QueueType) => {
-  const requestBody = spreadMap.get(obj.spreadName)(obj);
+  const mapFun = spreadMap.get(obj.spreadName);
+  if(!mapFun) return;
+  const requestBody = mapFun(obj);
   await addData(requestBody, obj.spreadName);
 };
 
 const deleteDataByrow = async (rowNum: number, spreadsheetName:string) => {
-  const spreadsheetSheetId = spreadsheetInfo.data.sheets?.find?.(v => v.properties.title === spreadsheetName).properties.sheetId;
+  const pro = spreadsheetInfo.data.sheets?.find?.(v => v.properties?.title === spreadsheetName)?.properties;
+  if(!pro) return;
+  const spreadsheetSheetId = pro.sheetId;
   await googleSheet.spreadsheets.batchUpdate({
     spreadsheetId,
     requestBody:{
@@ -95,7 +100,11 @@ const workSpreadsheet = async (type:string, obj:QueueType) => {
     case 'add': await addToSpreadsheet(obj); break;
     case 'del': await deleteSpreadsheet(obj); break;
   }
-  if(queue[0]) await workSpreadsheet(...queue.shift());
+  if(queue[0]) {
+    const val = queue.shift();
+    if(!val) return;
+    await workSpreadsheet(...val);
+  }
 }
 
 export const addQueueSpread = async (_type:string, _obj:QueueType) => {
@@ -103,7 +112,9 @@ export const addQueueSpread = async (_type:string, _obj:QueueType) => {
   if(working) return;
   let count = 0;
   working = true;
-  const [ type, obj ] = queue.shift();
+  const val = queue.shift();
+  if(!val) return;
+  const [ type, obj ] = val;
   do{
     try{
       await workSpreadsheet(type, obj);

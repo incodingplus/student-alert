@@ -281,13 +281,13 @@ const commands = [
     }
 ];
 
-const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
+const rest = new REST({ version: '10' }).setToken(process.env.TOKEN as string);
 
 (async () => {
     try {
         console.log('Started refreshing application (/) commands.');
 
-        let test = await rest.put(Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.GUILD), { body: commands });
+        let test = await rest.put(Routes.applicationGuildCommands(process.env.CLIENT_ID as string, process.env.GUILD as string), { body: commands });
         console.log(test)
         console.log('Successfully reloaded application (/) commands.');
     } catch (error) {

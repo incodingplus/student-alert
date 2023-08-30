@@ -16,6 +16,7 @@ export const studentContext = async (inter:Interaction<CacheType>) => {
     if(!inter.isMessageContextMenuCommand()) return;
     if (!command.has(inter.commandName)) return false;
     if (!channelsArr.includes(inter.channelId)) return false;
+    if(!inter.targetMessage.interaction) return false;
     const embed = new EmbedBuilder();
     if(inter.user.id === inter.targetMessage.interaction.user.id){
         await inter.targetMessage.delete();

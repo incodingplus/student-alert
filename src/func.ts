@@ -32,9 +32,9 @@ export type SF = () =>
 const studentReg = /^([가-힣]+)\d{5}$/;
 
 const getUser = (obj:readonly CommandInteractionOption<CacheType>[]) => {
-    const id = obj.find((v) => v.name === "아이디").member as GuildMember;
+    const id = obj.find((v) => v.name === "아이디")?.member as GuildMember;
     let name = obj.find((v) => v.name === "이름")?.value as string;
-    if(studentReg.test(id.nickname)){
+    if(!id.nickname || studentReg.test(id.nickname)){
         return id.nickname;
     } else if(studentReg.test(id.user.username)){
         return id.user.username;
@@ -75,10 +75,10 @@ const getDate = (date: string, flag = false) => {
         };
     }
     let nums = date.match(/\d+/g);
-    let M = Number(nums[0]);
-    let d = Number(nums[1]);
-    let h = Number(nums[2] ?? 0);
-    let m = Number(nums[3] ?? 0);
+    let M = Number(nums?.[0] ?? 0);
+    let d = Number(nums?.[1] ?? 0);
+    let h = Number(nums?.[2] ?? 0);
+    let m = Number(nums?.[3] ?? 0);
     const y = getMinDate(M, d);
     let realDate = new Date(y, M - 1, d);
     realDate.setHours(h, m);
@@ -115,10 +115,10 @@ const getDate = (date: string, flag = false) => {
 };
 
 export const 신규: CF = (obj) => {
-    const name = obj.find((v) => v.name === "이름").value as string;
-    const date = obj.find((v) => v.name === "일시").value as string;
-    const sub2 = obj.find((v) => v.name === "학년").value as string;
-    const sub = obj.find((v) => v.name === "과목").value as string;
+    const name = obj.find((v) => v.name === "이름")?.value as string;
+    const date = obj.find((v) => v.name === "일시")?.value as string;
+    const sub2 = obj.find((v) => v.name === "학년")?.value as string;
+    const sub = obj.find((v) => v.name === "과목")?.value as string;
     const other = (obj.find((v) => v.name === "특이사항")?.value as string) ?? "";
     let resultDate = getDate(date);
     if (!resultDate.status)
@@ -141,9 +141,9 @@ export const 신규: CF = (obj) => {
 };
 
 export const 예약: CF = (obj) => {
-    const name = obj.find((v) => v.name === "이름").value as string;
-    const sub = obj.find((v) => v.name === "학년").value as string;
-    const date = obj.find((v) => v.name === "일시").value as string;
+    const name = obj.find((v) => v.name === "이름")?.value as string;
+    const sub = obj.find((v) => v.name === "학년")?.value as string;
+    const date = obj.find((v) => v.name === "일시")?.value as string;
     const other = (obj.find((v) => v.name === "특이사항")?.value as string) ?? "";
     let resultDate = getDate(date);
     if (!resultDate.status)
@@ -165,10 +165,10 @@ export const 예약: CF = (obj) => {
 };
 
 export const 기록: CF = (obj) => {
-    const name = obj.find((v) => v.name === "이름").value as string;
-    const sub = obj.find((v) => v.name === "학년").value as string;
-    const date = obj.find((v) => v.name === "일시").value as string;
-    const other = (obj.find((v) => v.name === "내용").value as string) ?? "";
+    const name = obj.find((v) => v.name === "이름")?.value as string;
+    const sub = obj.find((v) => v.name === "학년")?.value as string;
+    const date = obj.find((v) => v.name === "일시")?.value as string;
+    const other = (obj.find((v) => v.name === "내용")?.value as string) ?? "";
     let resultDate = getDate(date);
     if (!resultDate.status)
         return {
@@ -194,9 +194,9 @@ export const 퇴원: CF = (obj) => {
         status: false,
         value: '학생 아이디를 써주세요.'
     }
-    const date = obj.find((v) => v.name === "일시").value as string;
-    const sub = obj.find((v) => v.name === "과목").value as string;
-    const other = obj.find((v) => v.name === "사유").value as string;
+    const date = obj.find((v) => v.name === "일시")?.value as string;
+    const sub = obj.find((v) => v.name === "과목")?.value as string;
+    const other = obj.find((v) => v.name === "사유")?.value as string;
     let resultDate = getDate(date, true);
     if (!resultDate.status)
         return {
@@ -222,8 +222,8 @@ export const 상담: CF = (obj) => {
         status: false,
         value: '학생 아이디를 써주세요.'
     }
-    const date = obj.find((v) => v.name === "일시").value as string;
-    const sub = obj.find((v) => v.name === "내용").value as string;
+    const date = obj.find((v) => v.name === "일시")?.value as string;
+    const sub = obj.find((v) => v.name === "내용")?.value as string;
     let resultDate = getDate(date, true);
     if (!resultDate.status)
         return {
@@ -248,8 +248,8 @@ export const 보충: CF = (obj) => {
         status: false,
         value: '학생 아이디를 써주세요.'
     }
-    const date = obj.find((v) => v.name === "일시").value as string;
-    const sub = obj.find((v) => v.name === "과목").value as string;
+    const date = obj.find((v) => v.name === "일시")?.value as string;
+    const sub = obj.find((v) => v.name === "과목")?.value as string;
     const other = (obj.find((v) => v.name === "특이사항")?.value as string) ?? "";
     let resultDate = getDate(date);
     if (!resultDate.status)
@@ -276,9 +276,9 @@ export const 결석: CF = (obj) => {
         status: false,
         value: '학생 아이디를 써주세요.'
     }
-    const date = obj.find((v) => v.name === "일시").value as string;
-    const sub = obj.find((v) => v.name === "과목").value as string;
-    const other = obj.find((v) => v.name === "사유").value as string;
+    const date = obj.find((v) => v.name === "일시")?.value as string;
+    const sub = obj.find((v) => v.name === "과목")?.value as string;
+    const other = obj.find((v) => v.name === "사유")?.value as string;
     let resultDate = getDate(date);
     if (!resultDate.status)
         return {
@@ -304,10 +304,10 @@ export const 변경: CF = (obj) => {
         status: false,
         value: '학생 아이디를 써주세요.'
     }
-    const date1 = obj.find((v) => v.name === "기존일시").value as string;
-    const date2 = obj.find((v) => v.name === "변경일시").value as string;
-    const sub = obj.find((v) => v.name === "과목").value as string;
-    const other = obj.find((v) => v.name === "사유").value as string;
+    const date1 = obj.find((v) => v.name === "기존일시")?.value as string;
+    const date2 = obj.find((v) => v.name === "변경일시")?.value as string;
+    const sub = obj.find((v) => v.name === "과목")?.value as string;
+    const other = obj.find((v) => v.name === "사유")?.value as string;
     let resultDate1 = getDate(date1);
     let resultDate2 = getDate(date2);
     if (!resultDate1.status)
@@ -339,9 +339,9 @@ export const 비대면: CF = (obj) => {
         status: false,
         value: '학생 아이디를 써주세요.'
     }
-    const date = obj.find((v) => v.name === "일시").value as string;
-    const sub = obj.find((v) => v.name === "과목").value as string;
-    const other = obj.find((v) => v.name === "사유").value as string;
+    const date = obj.find((v) => v.name === "일시")?.value as string;
+    const sub = obj.find((v) => v.name === "과목")?.value as string;
+    const other = obj.find((v) => v.name === "사유")?.value as string;
     let resultDate = getDate(date);
     if (!resultDate.status)
         return {

@@ -28,7 +28,7 @@ export const studentAlert = async (inter: Interaction<CacheType>, spreadName:str
     if (!inter.isChatInputCommand()) return false;
     if (!command.has(inter.commandName)) return false; //inter의 commandName이 command에서 정의한 타입에 포함되지 않으면 종료
     const CFArr = command.get(inter.commandName);
-    if (inter.channelId !== CFArr[1]) return false;
+    if (!CFArr || inter.channelId !== CFArr[1]) return false;
     const embed = new EmbedBuilder();
     const result = CFArr[0](inter.options.data);
     if (result.status) {
@@ -37,7 +37,7 @@ export const studentAlert = async (inter: Interaction<CacheType>, spreadName:str
 
         // 메세지 등록
         embed
-            .setColor(result.color)
+            .setColor(result.color ?? 'Random')
             .setTitle(`[${result.title}]`)
             .setDescription(
                 result.value
