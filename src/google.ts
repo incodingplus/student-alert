@@ -1,13 +1,23 @@
 import { sheets, auth } from "@googleapis/sheets";
-import fs from "fs/promises";
 import path from "path";
 import { dirname, spreadMap } from "./setting.js";
 
-const raw = await fs.readFile(
-  path.resolve(dirname, "../credential", process.env.SPREAD_PATH as string),
-  { encoding: "utf-8" }
-);
-const json = JSON.parse(raw);
+interface iSpread{
+  type: string
+  project_id: string
+  private_key_id: string
+  private_key: string
+  client_email: string
+  client_id: string
+  auth_uri: string
+  token_uri: string
+  auth_provider_x509_cert_url: string
+  client_x509_cert_url: string
+  universe_domain: string
+}
+
+const raw = Bun.file(path.resolve(dirname, "../credential", process.env.SPREAD_PATH as string));
+const json = await raw.json<iSpread>();
 const authorize = new auth.JWT(json.client_email, undefined, json.private_key, [
   "https://www.googleapis.com/auth/spreadsheets",
 ]);
@@ -32,8 +42,6 @@ const queue:[string, QueueType][] = [];
 /**
  * 값을 입력받아 스프레드시트에서 A열의 몇번째 행에 해당 값이 있는지를 반환해주는 함수
  * 값을 입력하지 않으면 스프레드시트에서 비어있는 부분의 행 번호를 알려준다.
- * @param {QueueType} obj
- * @returns {number} 열 번호를 반환
  */
 const getRownumByValue = async (obj:QueueType) => {
   const sheet = await googleSheet.spreadsheets.values.get({
@@ -125,7 +133,7 @@ export const addQueueSpread = async (_type:string, _obj:QueueType) => {
     }
   }while(working && count < 5);
   if(count === 5){
-    await fs.writeFile(path.resolve(dirname, '../logs/todo.json'), JSON.stringify([[type, obj], ...queue]));
+    await Bun.write(path.resolve(dirname, '../logs/todo.json'), JSON.stringify([[type, obj], ...queue]));
     process.exit(1);
   }
 }

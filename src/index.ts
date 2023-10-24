@@ -1,8 +1,7 @@
 import "./setting.js";
 import { QueueType, addQueueSpread } from "./google.js";
-import fs from "fs/promises";
 import path from "path";
-import { channelsArr, dirname, spreadsArr, constraintChannel } from "./setting.js";
+import { CHANNELS, dirname, SPREADS, CONSTRAINTS } from "./setting.js";
 import {
     Client,
     GatewayIntentBits,
@@ -32,20 +31,20 @@ const client = new Client({
 
 client.on("ready", async () => {
     console.log('준비 완료');
-    try{
-        const text = await fs.readFile(path.resolve(dirname, '../logs/todo.json'), { encoding:'utf-8'});
-        const json = JSON.parse(text) as [string, QueueType][];
+    const todo = Bun.file(path.resolve(dirname, '../logs/todo.json'))
+    if(await todo.exists()){
+        const json = await todo.json<[string, QueueType][]>();
         for(let i of json){
             await addQueueSpread(...i);
         }
-    } catch(err){
-        console.log(err);
+    } else{
+        console.log('todo 없음')
     }
 });
 
 client.on("messageCreate", async (msg) => {
     try {
-        if (!constraintChannel.includes(msg.channelId)) return;
+        if (!CONSTRAINTS.includes(msg.channelId)) return;
         if (msg.author.id !== process.env.CLIENT_ID) {
             await msg.delete();
             const embed = new EmbedBuilder()
@@ -57,11 +56,7 @@ client.on("messageCreate", async (msg) => {
             setTimeout(async () => await al.delete(), 3000);
         }
     } catch (err) {
-        await fs.writeFile(
-            path.resolve(dirname, "../logs", `${Date.now()}`),
-            String(err),
-            { encoding: "utf-8" }
-        );
+        await Bun.write(path.resolve(dirname, "../logs", `${Date.now()}`), String(err))
     }
 });
 
@@ -71,9 +66,9 @@ client.on('messageDelete', async inter => {
     if(!commandC.has(inter.interaction.commandName) && !commandM.has(inter.interaction.commandName)) return;
     let command = inter.interaction.commandName;
     if(commandC.has(command)){
-        spreadName = spreadsArr[0];
+        spreadName = SPREADS.DATA;
     } else if(commandM.has(command)){
-        spreadName = spreadsArr[1];
+        spreadName = SPREADS.JISI;
     } else {
         return;
     }
@@ -92,16 +87,15 @@ client.on("interactionCreate", async (inter) => {
             await inter.reply({ embeds: [embed], ephemeral:true });
             return;
         }
-        let bool = await studentAlert(inter, spreadsArr[0]);
-        if (!bool) bool = (await studentJisi(inter, channelsArr[1], spreadsArr[1])) ?? false;
+        let bool = await studentAlert(inter, SPREADS.DATA);
+        if (!bool) bool = (await studentJisi(inter, CHANNELS.JISI, SPREADS.JISI)) ?? false;
         if (!bool) bool = (await studentContext(inter)) ?? false;
     } catch (err) {
         console.error(err);
-        await fs.writeFile(
+        await Bun.write(
             path.resolve(dirname, "../logs", `${Date.now()}`),
-            typeof err === 'object' ? JSON.stringify(err) : String(err),
-            { encoding: "utf-8" }
-        );
+            typeof err === 'object' ? JSON.stringify(err) : String(err)
+        )
     }
 });
 

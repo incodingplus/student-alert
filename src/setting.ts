@@ -1,15 +1,20 @@
-import * as dotenv from 'dotenv';
-dotenv.config();
 import path from 'path';
 import { fileURLToPath } from 'url';
 import type { QueueType } from './google.js';
 import fs from 'fs/promises'
 
-export const channelsArr = (process.env.CHANNEL as string).split(',');
-export const constraintChannel = (process.env.CONSTRAINT as string).split(',');
-export const spreadsArr = (process.env.SPREAD_NAME as string).split(',');
+export const CHANNELS = {
+    ALERT:process.env.CHANNEL_ALERT ?? '',
+    JISI:process.env.CHANNEL_JISI ?? '',
+    COUNT:process.env.CHANNEL_COUNT ?? '',
+}
+export const CONSTRAINTS = (process.env.CONSTRAINT ?? '').split(',')
+export const SPREADS = {
+    DATA:process.env.SPREAD_NAME_DATA ?? '',
+    JISI:process.env.SPREAD_NAME_JISI ?? '',
+}
 export const DEFAULT_ID = process.env.DEFAULT_ID ?? '학생 알리미';
-
+console.log(DEFAULT_ID)
 const getToday = (): string => {
     let today = new Date();
     let year = today.getFullYear();
@@ -29,7 +34,7 @@ try{
     await fs.mkdir(path.resolve(dirname, '../logs'));
 }
 export const spreadMap = new Map<string, (obj:QueueType)=>string[]>([
-    [spreadsArr[0], obj => {
+    [SPREADS.DATA, obj => {
         const { id, type, inputValue } = obj;
         const requestBody: string[] = [id];
         if(type) requestBody.push(type);
@@ -50,7 +55,7 @@ export const spreadMap = new Map<string, (obj:QueueType)=>string[]>([
         requestBody[9] = getToday();
         return requestBody;
     }],
-    [spreadsArr[1], obj => {
+    [SPREADS.JISI, obj => {
         const { id, type, inputValue } = obj;
         const requestBody: string[] = [id];
         if(type) requestBody.push(type);

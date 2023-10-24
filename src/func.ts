@@ -34,7 +34,8 @@ const studentReg = /^([가-힣]+)\d{5}$/;
 const getUser = (obj:readonly CommandInteractionOption<CacheType>[]) => {
     const id = obj.find((v) => v.name === "아이디")?.member as GuildMember;
     let name = obj.find((v) => v.name === "이름")?.value as string;
-    if(!id.nickname || studentReg.test(id.nickname)){
+    console.log(DEFAULT_ID, id.user.username)
+    if(id.nickname && studentReg.test(id.nickname)){
         return id.nickname;
     } else if(studentReg.test(id.user.username)){
         return id.user.username;

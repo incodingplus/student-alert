@@ -1,5 +1,3 @@
-import { spawnSync } from 'child_process'
-
 while(true){
     const index = Bun.spawnSync(['bun', 'run', 'index']);
     console.log(index.stdout.toString());

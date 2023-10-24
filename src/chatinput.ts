@@ -8,18 +8,18 @@ import {
     EmbedBuilder,
 } from 'discord.js';
 import { addQueueSpread } from "./google.js";
-import { channelsArr } from './setting.js';
+import { CHANNELS } from './setting.js';
 
 export const command = new Map<string, [CF, string]>([
-    ["신규", [신규, channelsArr[0]]],
-    ["퇴원", [퇴원, channelsArr[0]]],
-    ["변경", [변경, channelsArr[0]]],
-    ["보충", [보충, channelsArr[0]]],
-    ["결석", [결석, channelsArr[0]]],
-    ["상담", [상담, channelsArr[0]]],
-    ["비대면", [비대면, channelsArr[0]]],
-    ["예약", [예약, channelsArr[2]]],
-    ["기록", [기록, channelsArr[2]]],
+    ["신규", [신규, CHANNELS.ALERT]],
+    ["퇴원", [퇴원, CHANNELS.ALERT]],
+    ["변경", [변경, CHANNELS.ALERT]],
+    ["보충", [보충, CHANNELS.ALERT]],
+    ["결석", [결석, CHANNELS.ALERT]],
+    ["상담", [상담, CHANNELS.ALERT]],
+    ["비대면", [비대면, CHANNELS.ALERT]],
+    ["예약", [예약, CHANNELS.COUNT]],
+    ["기록", [기록, CHANNELS.COUNT]],
 ]);
 
 
