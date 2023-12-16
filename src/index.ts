@@ -34,12 +34,12 @@ const client = new Client({
 client.on("ready", async () => {
     console.log('준비 완료');
     const todo = Bun.file(path.resolve(dirname, '../logs/todo.json'))
-    if(await todo.exists()){
+    if (await todo.exists()) {
         const json = await todo.json<[string, QueueType][]>();
-        for(let i of json){
+        for (let i of json) {
             await addQueueSpread(...i);
         }
-    } else{
+    } else {
         console.log('todo 없음')
     }
 });
@@ -64,17 +64,17 @@ client.on("messageCreate", async (msg) => {
 
 client.on('messageDelete', async inter => {
     let spreadName = '';
-    if(!inter?.interaction?.commandName) return;
-    if(!commandC.has(inter.interaction.commandName) && !commandM.has(inter.interaction.commandName)) return;
+    if (!inter?.interaction?.commandName) return;
+    if (!commandC.has(inter.interaction.commandName) && !commandM.has(inter.interaction.commandName)) return;
     let command = inter.interaction.commandName;
-    if(commandC.has(command)){
+    if (commandC.has(command)) {
         spreadName = SPREADS.DATA;
-    } else if(commandM.has(command)){
+    } else if (commandM.has(command)) {
         spreadName = SPREADS.JISI;
     } else {
         return;
     }
-    await addQueueSpread('del', { id: inter.id, spreadName});
+    await addQueueSpread('del', { id: inter.id, spreadName });
 });
 
 client.on("interactionCreate", async (inter) => {
@@ -86,7 +86,7 @@ client.on("interactionCreate", async (inter) => {
             embed
                 .setColor("Red")
                 .setTitle("이 채널에서는 학생 알리미를 사용할 수 없습니다.");
-            await inter.reply({ embeds: [embed], ephemeral:true });
+            await inter.reply({ embeds: [embed], ephemeral: true });
             return;
         }
         let bool = await studentAlert(inter, SPREADS.DATA);
@@ -103,21 +103,21 @@ client.on("interactionCreate", async (inter) => {
 
 client.login(Bun.env.HAN_TOKEN);
 
-const serve:Serve<unknown> = {
-    port:Bun.env.HAN_PORT ?? '4500',
-    hostname:'0.0.0.0',
+const serve: Serve<unknown> = {
+    port: Bun.env.HAN_PORT ?? '4500',
+    hostname: '0.0.0.0',
     fetch(request) {
-      const url = new URL(request.url);
-      if(url.pathname === '/hook' && request.method === 'POST'){
-        return verifySignature(request)
-      }
-      return new Response('404 not found', {
-        status:404
-      });
+        const url = new URL(request.url);
+        if (url.pathname === '/hook' && request.method === 'POST') {
+            return verifySignature(request)
+        }
+        return new Response('404 not found', {
+            status: 404
+        });
     },
-    error(req){
-      Bun.write(`./logs/${Date.now()}`, String(req));
-      return new Response(JSON.stringify({status:"bad", err:req.message}));
+    error(req) {
+        Bun.write(`./logs/${Date.now()}`, String(req));
+        return new Response(JSON.stringify({ status: "bad", err: req.message }));
     },
-  }
-  export default serve
+}
+export default serve

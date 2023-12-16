@@ -2,17 +2,23 @@ import { sheets, auth } from "@googleapis/sheets";
 import path from "path";
 import { dirname, spreadMap } from "./setting.js";
 
+console.log('authorize 위')
 const authorize = new auth.JWT(Bun.env.HAN_SPREAD_EMAIL, undefined, Bun.env.HAN_SPREAD_PRIVATE_KEY, [
   "https://www.googleapis.com/auth/spreadsheets",
 ]);
+console.log('googlesheet 위')
 const googleSheet = sheets({
   version: "v4",
   auth: authorize,
 });
 const spreadsheetId = Bun.env.HAN_SPREAD_ID;
+
+console.log('spreadInfo 위')
 const spreadsheetInfo = await googleSheet.spreadsheets.get({
   spreadsheetId,
 })
+
+console.log('spreadInfo 아래')
 export interface QueueType{
   id:string;
   type?:string;
