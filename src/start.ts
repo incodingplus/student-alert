@@ -24,6 +24,8 @@ const start = async () => {
         if(sub.killed){
             clearInterval(inter)
             start()
+        } else {
+            console.log(`${sub} 아직 살아있음`)
         }
     }, 5000)
 }
