@@ -4,16 +4,16 @@ import type { QueueType } from './google.js';
 import fs from 'fs/promises'
 
 export const CHANNELS = {
-    ALERT:process.env.CHANNEL_ALERT ?? '',
-    JISI:process.env.CHANNEL_JISI ?? '',
-    COUNT:process.env.CHANNEL_COUNT ?? '',
+    ALERT:Bun.env.HAN_CHANNEL_ALERT ?? '',
+    JISI:Bun.env.HAN_CHANNEL_JISI ?? '',
+    COUNT:Bun.env.HAN_CHANNEL_COUNT ?? '',
 }
-export const CONSTRAINTS = (process.env.CONSTRAINT ?? '').split(',')
+export const CONSTRAINTS = (Bun.env.HAN_CONSTRAINT ?? '').split(',')
 export const SPREADS = {
-    DATA:process.env.SPREAD_NAME_DATA ?? '',
-    JISI:process.env.SPREAD_NAME_JISI ?? '',
+    DATA:Bun.env.HAN_SPREAD_NAME_DATA ?? '',
+    JISI:Bun.env.HAN_SPREAD_NAME_JISI ?? '',
 }
-export const DEFAULT_ID = process.env.DEFAULT_ID ?? '학생 알리미';
+export const DEFAULT_ID = Bun.env.HAN_DEFAULT_ID ?? '학생 알리미';
 console.log(DEFAULT_ID)
 const getToday = (): string => {
     let today = new Date();

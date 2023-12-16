@@ -19,6 +19,8 @@ import {
 import {
     studentContext
 } from './contextmenu.js'
+import { Serve } from "bun";
+import { verifySignature } from "./hook.js";
 
 const client = new Client({
     intents: [
@@ -45,7 +47,7 @@ client.on("ready", async () => {
 client.on("messageCreate", async (msg) => {
     try {
         if (!CONSTRAINTS.includes(msg.channelId)) return;
-        if (msg.author.id !== process.env.CLIENT_ID) {
+        if (msg.author.id !== Bun.env.HAN_CLIENT_ID) {
             await msg.delete();
             const embed = new EmbedBuilder()
                 .setColor("Red")
@@ -79,7 +81,7 @@ client.on("interactionCreate", async (inter) => {
     try {
         if (!inter.isChatInputCommand() && !inter.isMessageContextMenuCommand()) return;
         //@ts-ignore
-        if (inter?.channel?.parentId !== process.env.CATEGORY) {
+        if (inter?.channel?.parentId !== Bun.env.HAN_CATEGORY) {
             const embed = new EmbedBuilder();
             embed
                 .setColor("Red")
@@ -99,4 +101,23 @@ client.on("interactionCreate", async (inter) => {
     }
 });
 
-client.login(process.env.TOKEN);
+client.login(Bun.env.HAN_TOKEN);
+
+const serve:Serve<unknown> = {
+    port:Bun.env.HAN_PORT ?? '4500',
+    hostname:'0.0.0.0',
+    fetch(request) {
+      const url = new URL(request.url);
+      if(url.pathname === '/hook' && request.method === 'POST'){
+        return verifySignature(request)
+      }
+      return new Response('404 not found', {
+        status:404
+      });
+    },
+    error(req){
+      Bun.write(`./logs/${Date.now()}`, String(req));
+      return new Response(JSON.stringify({status:"bad", err:req.message}));
+    },
+  }
+  export default serve

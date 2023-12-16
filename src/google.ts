@@ -2,30 +2,14 @@ import { sheets, auth } from "@googleapis/sheets";
 import path from "path";
 import { dirname, spreadMap } from "./setting.js";
 
-interface iSpread{
-  type: string
-  project_id: string
-  private_key_id: string
-  private_key: string
-  client_email: string
-  client_id: string
-  auth_uri: string
-  token_uri: string
-  auth_provider_x509_cert_url: string
-  client_x509_cert_url: string
-  universe_domain: string
-}
-
-const raw = Bun.file(path.resolve(dirname, "../credential", process.env.SPREAD_PATH as string));
-const json = await raw.json<iSpread>();
-const authorize = new auth.JWT(json.client_email, undefined, json.private_key, [
+const authorize = new auth.JWT(Bun.env.HAN_SPREAD_EMAIL, undefined, Bun.env.HAN_SPREAD_PRIVATE_KEY, [
   "https://www.googleapis.com/auth/spreadsheets",
 ]);
 const googleSheet = sheets({
   version: "v4",
   auth: authorize,
 });
-const spreadsheetId = process.env.SPREAD_ID;
+const spreadsheetId = Bun.env.HAN_SPREAD_ID;
 const spreadsheetInfo = await googleSheet.spreadsheets.get({
   spreadsheetId,
 })
