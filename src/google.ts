@@ -2,7 +2,7 @@ import { sheets, auth } from "@googleapis/sheets";
 import path from "path";
 import { dirname, spreadMap } from "./setting.js";
 
-console.log('authorize 위')
+console.log(Bun.env.HAN_SPREAD_PRIVATE_KEY)
 const authorize = new auth.JWT(Bun.env.HAN_SPREAD_EMAIL, undefined, Bun.env.HAN_SPREAD_PRIVATE_KEY, [
   "https://www.googleapis.com/auth/spreadsheets",
 ]);

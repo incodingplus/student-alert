@@ -16,18 +16,10 @@ const start = async () => {
             break
         }
     }
-    sub.kill()
+    sub.kill(9)
     const { stdout } = Bun.spawnSync(['git', 'pull'])
     console.log(decode.decode(stdout))
     console.log('git pull 완료')
-    const inter = setInterval(() => {
-        if(sub.killed){
-            clearInterval(inter)
-            start()
-        } else {
-            console.log(`${sub} 아직 살아있음`)
-        }
-    }, 5000)
 }
 
 start()
