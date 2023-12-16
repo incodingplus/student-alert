@@ -22,6 +22,8 @@ import {
 import { Serve } from "bun";
 import { verifySignature } from "./hook.js";
 
+console.log('버전 1.0.3')
+
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
