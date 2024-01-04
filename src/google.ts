@@ -47,8 +47,9 @@ const getRownumByValue = async (obj:QueueType) => {
 const addData = async (val: string[], spreadsheetName:string) => {
   await googleSheet.spreadsheets.values.append({
     spreadsheetId,
-    range:spreadsheetName,
+    range:`${spreadsheetName}!A:A`,
     valueInputOption:'RAW',
+    insertDataOption:'INSERT_ROWS',
     requestBody:{
       values:[val]
     }
