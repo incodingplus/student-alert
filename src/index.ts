@@ -102,3 +102,10 @@ client.on("interactionCreate", async (inter) => {
 });
 
 client.login(Bun.env.HAN_TOKEN);
+
+export default {
+    fetch(){
+        return new Response('Discord bot')
+    },
+    port:8080
+}

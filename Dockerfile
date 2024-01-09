@@ -7,8 +7,10 @@ WORKDIR /usr/src/app
 
 COPY package.json bun.lockb ./
 
-RUN bun install --frozen-lockfile
+RUN bun install
 
 COPY . .
+
+EXPOSE 8080
 
 CMD ["bun", "run", "start"]
