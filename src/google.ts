@@ -1,15 +1,15 @@
 import { sheets, auth } from "@googleapis/sheets";
+
 import path from "path";
 import { dirname, spreadMap } from "./setting.js";
 
-const privateKey = (Bun.env.HAN_SPREAD_PRIVATE_KEY ?? '').replaceAll('\\n', '\n')
+const author = new auth.GoogleAuth({
+  scopes:["https://www.googleapis.com/auth/spreadsheets"]
+})
 
-const authorize = new auth.JWT(Bun.env.HAN_SPREAD_EMAIL, undefined, privateKey, [
-  "https://www.googleapis.com/auth/spreadsheets",
-]);
 const googleSheet = sheets({
   version: "v4",
-  auth: authorize,
+  auth:author,
 });
 const spreadsheetId = Bun.env.HAN_SPREAD_ID;
 

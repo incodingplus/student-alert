@@ -22,7 +22,7 @@ import {
 import { Serve } from "bun";
 import { verifySignature } from "./hook.js";
 
-console.log('버전 1.0.3')
+console.log('버전 1.0.4')
 
 const client = new Client({
     intents: [
@@ -104,22 +104,3 @@ client.on("interactionCreate", async (inter) => {
 });
 
 client.login(Bun.env.HAN_TOKEN);
-
-const serve: Serve<unknown> = {
-    port: Bun.env.HAN_PORT ?? '4500',
-    hostname: '0.0.0.0',
-    fetch(request) {
-        const url = new URL(request.url);
-        if (url.pathname === '/hook' && request.method === 'POST') {
-            return verifySignature(request)
-        }
-        return new Response('404 not found', {
-            status: 404
-        });
-    },
-    error(req) {
-        Bun.write(`./logs/${Date.now()}`, String(req));
-        return new Response(JSON.stringify({ status: "bad", err: req.message }));
-    },
-}
-export default serve

@@ -24,6 +24,6 @@
     "discord.js": "latest"
   },
   "devDependencies": {
-    "bun-types": "latest"
+    "@types/bun": "latest"
   }
 }
