@@ -1,6 +1,6 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
-import type { QueueType } from './google.js';
+import type { QueueType } from './google';
 import fs from 'fs/promises'
 
 export const CHANNELS = {

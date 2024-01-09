@@ -1,4 +1,4 @@
-import './setting.js';
+import './setting';
 import {
     REST,
     Routes

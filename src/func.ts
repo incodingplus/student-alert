@@ -5,7 +5,7 @@ import type {
     GuildMember
 } from 'discord.js';
 
-import { DEFAULT_ID } from './setting.js';
+import { DEFAULT_ID } from './setting';
 
 export type CF = (obj: readonly CommandInteractionOption<CacheType>[]) =>
 | {

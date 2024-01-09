@@ -1,6 +1,6 @@
-import type { CF } from './func.js';
-import { 삭제 } from './func.js';
-import { CHANNELS } from './setting.js';
+import type { CF } from './func';
+import { 삭제 } from './func';
+import { CHANNELS } from './setting';
 import type {
     Interaction,
     CacheType,

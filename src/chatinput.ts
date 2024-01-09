@@ -1,5 +1,5 @@
-import { 신규, 퇴원, 변경, 보충, 결석, 비대면, 상담, 예약, 기록 } from './func.js';
-import type { CF } from './func.js';
+import { 신규, 퇴원, 변경, 보충, 결석, 비대면, 상담, 예약, 기록 } from './func';
+import type { CF } from './func';
 import type {
     CacheType,
     Interaction,
@@ -7,8 +7,8 @@ import type {
 import {
     EmbedBuilder,
 } from 'discord.js';
-import { addQueueSpread } from "./google.js";
-import { CHANNELS } from './setting.js';
+import { addQueueSpread } from "./google";
+import { CHANNELS } from './setting';
 
 export const command = new Map<string, [CF, string]>([
     ["신규", [신규, CHANNELS.ALERT]],

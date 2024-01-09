@@ -11,16 +11,14 @@ import {
 import {
     studentAlert,
     command as commandC
-} from "./chatinput.js";
+} from "./chatinput";
 import {
     studentJisi,
     command as commandM
-} from './modalinput.js';
+} from './modalinput';
 import {
     studentContext
-} from './contextmenu.js'
-import { Serve } from "bun";
-import { verifySignature } from "./hook.js";
+} from './contextmenu'
 
 console.log('버전 1.0.4')
 

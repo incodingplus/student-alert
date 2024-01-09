@@ -4,8 +4,7 @@
   "description": "디스코드 학생 알리미 봇 입니다.",
   "type": "module",
   "scripts": {
-    "start": "bun src/start.ts",
-    "index": "bun src/index.ts",
+    "start": "bun src/index.ts",
     "init": "bun src/init.ts",
     "test": "bun src/test.ts"
   },

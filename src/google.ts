@@ -1,7 +1,7 @@
 import { sheets, auth } from "@googleapis/sheets";
 
 import path from "path";
-import { dirname, spreadMap } from "./setting.js";
+import { dirname, spreadMap } from "./setting";
 
 const author = new auth.GoogleAuth({
   scopes:["https://www.googleapis.com/auth/spreadsheets"]

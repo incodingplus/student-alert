@@ -1,5 +1,5 @@
-import type { SF } from './func.js';
-import { 지시 } from './func.js';
+import type { SF } from './func';
+import { 지시 } from './func';
 import type {
     Interaction,
     CacheType,
@@ -12,7 +12,7 @@ import {
     ActionRowBuilder,
     EmbedBuilder,
 } from 'discord.js';
-import { addQueueSpread } from './google.js';
+import { addQueueSpread } from './google';
 
 export const command = new Map<string, SF>([
     ['지시', 지시]
