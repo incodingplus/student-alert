@@ -1,0 +1,7 @@
+#!/bin/bash
+git add -A && \
+git commit -m "$1" && \
+git push && \
+docker build -t myrlagksruf/sn:latest . && \
+docker push myrlagksruf/sn:latest && \
+docker rmi myrlagksruf/sn:latest
