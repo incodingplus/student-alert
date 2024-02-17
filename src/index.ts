@@ -35,7 +35,7 @@ client.on("ready", async () => {
     console.log('준비 완료');
     const todo = Bun.file(path.resolve(dirname, '../logs/todo.json'))
     if (await todo.exists()) {
-        const json = await todo.json<[string, QueueType][]>();
+        const json = await todo.json() as [string, QueueType][];
         for (let i of json) {
             await addQueueSpread(...i);
         }
@@ -102,10 +102,3 @@ client.on("interactionCreate", async (inter) => {
 });
 
 client.login(Bun.env.HAN_TOKEN);
-
-export default {
-    fetch(){
-        return new Response('Discord bot')
-    },
-    port:8080
-}
